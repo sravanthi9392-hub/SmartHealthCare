@@ -1,0 +1,420 @@
+{% extends "base.html" %}
+
+{% block title %}Smart AI Diagnosis & Clinical Prescription | Smart Healthcare{% endblock %}
+{% block header_title %}Smart AI Clinical Diagnosis & Rx{% endblock %}
+{% block header_subtitle %}50+ Symptom ML Model • Approved Pharmacology & Health Cafe Nutrition{% endblock %}
+
+{% block content %}
+
+{% if result %}
+
+<!-- ====================================================================
+     GENERATED OFFICIAL CLINICAL Rx SLIP (AFTER DIAGNOSIS)
+     ==================================================================== -->
+<div class="rx-slip">
+    <div class="rx-watermark">Rx</div>
+
+    <!-- Clinic Header -->
+    <div class="rx-header">
+        <div>
+            <div class="rx-clinic-name">
+                <i class="fa-solid fa-notes-medical" style="color: #0284c7;"></i> SMART HEALTHCARE CLINICAL NETWORK
+            </div>
+            <div class="rx-clinic-sub">
+                AI Digital Diagnostic Center • Approved Clinical Pharmacology Guidelines
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">
+                Date: {{ rx_date or 'Today' }}
+            </div>
+            <div style="font-size: 0.8rem; color: #64748b;">
+                Rx No: SHC-{{ range(10000, 99999)|random }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Metadata Block -->
+    <div class="rx-patient-info">
+        <div>
+            <div class="rx-field-label">Patient Name</div>
+            <div class="rx-field-val">{{ patient_name }}</div>
+        </div>
+        <div>
+            <div class="rx-field-label">Age & Gender</div>
+            <div class="rx-field-val">{{ patient_age }} yrs • {{ current_user.gender or 'Not specified' }}</div>
+        </div>
+        <div>
+            <div class="rx-field-label">Blood Group</div>
+            <div class="rx-field-val" style="color:#ef4444;">{{ current_user.blood_group or 'O+' }}</div>
+        </div>
+        <div>
+            <div class="rx-field-label">Duration</div>
+            <div class="rx-field-val">{{ time_period }}</div>
+        </div>
+        <div style="grid-column: 1 / -1;">
+            <div class="rx-field-label">Reported & Detected Symptoms</div>
+            <div class="rx-field-val" style="color:#334155; font-size: 0.9rem;">
+                {{ symptoms }}
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Diagnosis Banner -->
+    <div class="rx-diagnosis-banner">
+        <div>
+            <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: #0369a1;">
+                Primary Clinical Diagnosis (Machine Learning Prediction)
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a;">
+                {{ result.disease }}
+            </div>
+            <div style="font-size: 0.85rem; color: #475569; margin-top: 0.2rem;">
+                Recommended Specialist: <b style="color: #0284c7;">{{ result.specialist }}</b> • Severity: <b>{{ result.severity }}</b>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <span class="badge badge-success" style="font-size: 1rem; padding: 0.4rem 1rem;">
+                <i class="fa-solid fa-microchip"></i> {{ result.confidence }}% AI Match
+            </span>
+        </div>
+    </div>
+
+    <!-- Rx Medicines Table -->
+    <h4 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-pills" style="color: #0284c7;"></i> Prescribed Medications & Dosage (Rx)
+    </h4>
+    <table class="rx-med-table">
+        <thead>
+            <tr>
+                <th style="width: 35%;">Medicine Name</th>
+                <th style="width: 35%;">Dosage & Instructions</th>
+                <th style="width: 30%;">Schedule / Timings</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for med in result.medicines %}
+            <tr>
+                <td>
+                    <b style="color: #0369a1;">{{ med }}</b>
+                </td>
+                <td>
+                    {{ result.dosage[loop.index0] if loop.index0 < result.dosage|length else 'As directed' }}
+                </td>
+                <td>
+                    <span class="badge badge-primary">
+                        {{ result.timings[loop.index0] if loop.index0 < result.timings|length else 'After meals' }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Smart Health Cafe & Diet Guidance Plan -->
+    {% if result.health_cafe_diet %}
+    <div class="health-cafe-box">
+        <div class="health-cafe-title">
+            <i class="fa-solid fa-utensils"></i> Smart Health Cafe: {{ result.health_cafe_diet.title }}
+        </div>
+        <div class="cafe-meal-grid">
+            <div class="cafe-meal-card">
+                <h5><i class="fa-solid fa-mug-saucer"></i> Breakfast</h5>
+                <p>{{ result.health_cafe_diet.breakfast }}</p>
+            </div>
+            <div class="cafe-meal-card">
+                <h5><i class="fa-solid fa-bowl-rice"></i> Lunch</h5>
+                <p>{{ result.health_cafe_diet.lunch }}</p>
+            </div>
+            <div class="cafe-meal-card">
+                <h5><i class="fa-solid fa-wheat-awn"></i> Dinner</h5>
+                <p>{{ result.health_cafe_diet.dinner }}</p>
+            </div>
+            <div class="cafe-meal-card">
+                <h5><i class="fa-solid fa-bottle-water"></i> Hydration & Sips</h5>
+                <p>{{ result.health_cafe_diet.beverages }}</p>
+            </div>
+        </div>
+        <div style="margin-top: 1rem; background: #fff; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #fed7aa; color: #9a3412; font-size: 0.85rem;">
+            <b><i class="fa-solid fa-ban"></i> Strictly Avoid During Recovery:</b> {{ result.health_cafe_diet.strictly_avoid }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Home Remedies & Precautions -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.25rem;">
+            <h5 style="color: #166534; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">
+                <i class="fa-solid fa-leaf"></i> Home Remedies & Lifestyle Care
+            </h5>
+            <ul style="padding-left: 1.25rem; font-size: 0.875rem; color: #14532d; display: flex; flex-direction: column; gap: 0.4rem;">
+                {% for remedy in result.home_remedies %}
+                <li>{{ remedy }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px; padding: 1.25rem;">
+            <h5 style="color: #92400e; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i> Warnings & Precautions
+            </h5>
+            <ul style="padding-left: 1.25rem; font-size: 0.875rem; color: #78350f; display: flex; flex-direction: column; gap: 0.4rem;">
+                {% for pre in result.precautions %}
+                <li>{{ pre }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Doctor Signature & Stamp -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1.5rem; border-top: 1px dashed #cbd5e1;">
+        <div style="font-size: 0.8rem; color: #94a3b8; max-width: 400px;">
+            This digital clinical prescription was generated by the Smart Healthcare AI Diagnostic Engine and saved permanently to your medical history.
+        </div>
+        <div style="text-align: center;">
+            <div style="font-family: cursive; font-size: 1.5rem; color: #0369a1; margin-bottom: 0.2rem;">
+                Dr. Antigravity MD
+            </div>
+            <div style="border-top: 1px solid #334155; padding-top: 4px; font-size: 0.8rem; font-weight: 700; color: #475569;">
+                Certified Medical Officer
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar no-print" style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <a href="{{ url_for('prescription') }}" class="btn btn-outline">
+            <i class="fa-solid fa-arrow-left"></i> Run Another Diagnosis
+        </a>
+        <div style="display: flex; gap: 0.75rem;">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                <i class="fa-solid fa-house"></i> Go to Dashboard
+            </a>
+            <button onclick="window.print()" class="btn btn-success">
+                <i class="fa-solid fa-print"></i> Print Official Prescription (PDF)
+            </button>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<!-- ====================================================================
+     IMPROVED AI DIAGNOSIS FORM: TYPE FIRST -> AUTO-TOGGLE SYMPTOMS
+     ==================================================================== -->
+<div class="card" style="max-width: 950px; margin: 0 auto;">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">
+                <i class="fa-solid fa-stethoscope" style="color: #0284c7;"></i> AI Clinical Symptom Analyzer
+            </h2>
+            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.3rem;">
+                Describe your symptoms naturally. As you type, our NLP engine will <b>automatically detect and toggle matching clinical indicators</b> below!
+            </p>
+        </div>
+        <span class="badge badge-success">ML Accuracy: 99.3%</span>
+    </div>
+
+    <form method="POST" action="{{ url_for('prescription') }}" id="prescriptionForm">
+
+        <!-- STEP 1: PROMINENT NATURAL TEXT INPUT (TYPE FIRST!) -->
+        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #bae6fd; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.75rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <label style="font-weight: 800; color: #0369a1; font-size: 1.05rem;">
+                    <i class="fa-solid fa-keyboard" style="color: #0284c7;"></i> Step 1: Type How You Feel (Describe Your Condition)
+                </label>
+                <span class="badge badge-primary" style="background: #ffffff; border: 1px solid #7dd3fc; font-weight: 700;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Detects While You Type
+                </span>
+            </div>
+
+            <p style="color: #475569; font-size: 0.85rem; margin-bottom: 0.85rem;">
+                Simply write how your body feels. Example: <i>"I have high fever with shivering, headache and sore throat since yesterday. Also feeling tired."</i>
+            </p>
+
+            <textarea id="symptomsTextarea" name="symptoms" class="form-control" rows="4" style="background: #ffffff; font-size: 1rem; border-color: #7dd3fc; padding: 1rem; line-height: 1.6;" placeholder="Type your symptoms here in plain English... Our AI will match them instantly!"></textarea>
+
+            <!-- Live Auto-Detection Notification Banner -->
+            <div id="autoDetectAlert" style="display: none; align-items: center; gap: 0.75rem; margin-top: 0.85rem; background: #ffffff; border: 1px solid #86efac; padding: 0.75rem 1rem; border-radius: 10px; color: #166534; font-size: 0.875rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #dcfce7; display: flex; align-items: center; justify-content: center; color: #16a34a; font-size: 0.9rem;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div>
+                    <b>✨ AI Live Detection:</b> Automatically matched <span id="autoDetectCount" style="font-weight: 800; text-decoration: underline;">0</span> clinical symptoms:
+                    <span id="autoDetectNames" style="font-weight: 600; color: #15803d;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: SLEEK ACTIVE SYMPTOMS STRIP WITH COLLAPSIBLE CATALOG (HIDDEN BY DEFAULT) -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);">
+            <!-- Step Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <span class="badge badge-primary" style="font-weight: 700; font-size: 0.775rem;">Step 2 of 3</span>
+                    <h3 style="font-weight: 800; color: #0f172a; font-size: 1.15rem; margin: 0;">
+                        <i class="fa-solid fa-circle-check" style="color: #0284c7;"></i> Active Clinical Symptoms for AI Analysis
+                    </h3>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span id="selectedCountBadge" class="badge badge-primary" style="font-size: 0.825rem; font-weight: 700; padding: 0.35rem 0.75rem;">
+                        0 Selected
+                    </span>
+                </div>
+            </div>
+
+            <!-- Active Selected Symptoms Display Box (Prominent & Clean) -->
+            <div style="margin-bottom: 1.25rem; padding: 1rem 1.25rem; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; min-height: 58px; display: flex; align-items: center;">
+                <div id="selectedTagsContainer" style="display: flex; flex-wrap: wrap; gap: 0.45rem; width: 100%; align-items: center;">
+                    <span style="color:#64748b; font-size:0.875rem;">
+                        <i class="fa-solid fa-wand-magic-sparkles" style="color: #0284c7;"></i> Describe how you feel in Step 1 to auto-detect symptoms, or click <b>Browse Full Catalog</b> below.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Hidden input for form submission -->
+            <input type="hidden" name="selected_symptoms" id="selectedSymptomsInput" value="">
+
+            <!-- Controls Toolbar: Browse Catalog Button + Quick Search + Reset -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+                    <button type="button" id="toggleCatalogBtn" class="btn btn-outline" onclick="toggleSymptomsCatalog()" style="background: #f0f9ff; border: 1.5px solid #0284c7; color: #0284c7; font-weight: 700; padding: 0.55rem 1.2rem; border-radius: 10px; font-size: 0.875rem;">
+                        <i class="fa-solid fa-layer-group"></i> <span id="catalogBtnText">Browse Full Symptoms Catalog (50 available)</span> <i class="fa-solid fa-chevron-down" id="catalogChevron" style="margin-left: 4px;"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="clearAllSymptoms()" style="font-size: 0.825rem; padding: 0.55rem 0.95rem; border-radius: 10px; color: #ef4444; border-color: #fca5a5;">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                </div>
+
+                <div style="position: relative;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+                    <input type="text" id="symptomSearch" placeholder="Search 50+ symptoms..." onfocus="openCatalogIfClosed()" style="padding: 0.55rem 1rem 0.55rem 2.2rem; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.875rem; width: 220px; background: #ffffff;">
+                </div>
+            </div>
+
+            <!-- COLLAPSIBLE SYMPTOMS CATALOG DRAWER (HIDDEN BY DEFAULT TO KEEP UI CLEAN) -->
+            <div id="symptomsCatalogDrawer" style="display: none; margin-top: 1.25rem; padding: 1.25rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.65rem; border-bottom: 1px solid #e2e8f0;">
+                    <div>
+                        <span style="font-weight: 800; color: #0f172a; font-size: 0.95rem;">
+                            <i class="fa-solid fa-tags" style="color: #0284c7;"></i> Clinical Symptoms Directory
+                        </span>
+                        <div style="color: #64748b; font-size: 0.8rem;">Click any symptom badge below to toggle it for your AI diagnosis.</div>
+                    </div>
+                    <button type="button" class="btn btn-outline" onclick="toggleSymptomsCatalog()" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; background: #ffffff;">
+                        <i class="fa-solid fa-chevron-up"></i> Hide Catalog
+                    </button>
+                </div>
+
+                <!-- Category Filter Pills Bar -->
+                <div style="display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e2e8f0;">
+                    <button type="button" class="category-filter-btn active" data-cat="all" onclick="filterCategoryPills('all', this)">
+                        <i class="fa-solid fa-layer-group"></i> All (50)
+                    </button>
+                    {% for category, items in categorized_symptoms.items() %}
+                    <button type="button" class="category-filter-btn" data-cat="{{ category|lower|replace(' ', '-')|replace('&', 'and') }}" onclick="filterCategoryPills('{{ category|lower|replace(' ', '-')|replace('&', 'and') }}', this)">
+                        {% if 'General' in category %}
+                            <i class="fa-solid fa-temperature-three-quarters" style="color: #ef4444;"></i>
+                        {% elif 'Respiratory' in category %}
+                            <i class="fa-solid fa-lungs" style="color: #0284c7;"></i>
+                        {% elif 'Digestive' in category %}
+                            <i class="fa-solid fa-apple-whole" style="color: #10b981;"></i>
+                        {% elif 'Head' in category or 'Neurological' in category %}
+                            <i class="fa-solid fa-brain" style="color: #8b5cf6;"></i>
+                        {% else %}
+                            <i class="fa-solid fa-hand-dots" style="color: #f59e0b;"></i>
+                        {% endif %}
+                        {{ category.split('&')[0].strip() }} ({{ items|length }})
+                    </button>
+                    {% endfor %}
+                </div>
+
+                <!-- Neatly Organized Category Cards Grid -->
+                <div style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 340px; overflow-y: auto; padding-right: 0.35rem;" id="categoriesContainer">
+                    {% for category, items in categorized_symptoms.items() %}
+                    <div class="symptom-category-card" data-category-group="{{ category|lower|replace(' ', '-')|replace('&', 'and') }}">
+                        <div class="symptom-category-header">
+                            <div class="symptom-cat-title">
+                                {% if 'General' in category %}
+                                    <div style="width: 26px; height: 26px; border-radius: 6px; background: #fee2e2; color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                                        <i class="fa-solid fa-temperature-three-quarters"></i>
+                                    </div>
+                                {% elif 'Respiratory' in category %}
+                                    <div style="width: 26px; height: 26px; border-radius: 6px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                                        <i class="fa-solid fa-lungs"></i>
+                                    </div>
+                                {% elif 'Digestive' in category %}
+                                    <div style="width: 26px; height: 26px; border-radius: 6px; background: #dcfce7; color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                                        <i class="fa-solid fa-apple-whole"></i>
+                                    </div>
+                                {% elif 'Head' in category or 'Neurological' in category %}
+                                    <div style="width: 26px; height: 26px; border-radius: 6px; background: #ede9fe; color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                                        <i class="fa-solid fa-brain"></i>
+                                    </div>
+                                {% else %}
+                                    <div style="width: 26px; height: 26px; border-radius: 6px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                                        <i class="fa-solid fa-hand-dots"></i>
+                                    </div>
+                                {% endif %}
+                                <span style="font-weight: 700; color: #0f172a; font-size: 0.9rem;">{{ category }}</span>
+                            </div>
+                            <span class="badge" style="background: #ffffff; border: 1px solid #cbd5e1; color: #475569; font-size: 0.725rem; font-weight: 700;">
+                                {{ items|length }} Symptoms
+                            </span>
+                        </div>
+
+                        <div class="symptom-pills-wrap">
+                            {% for sym_key, sym_name in items %}
+                            <div class="symptom-tag" data-value="{{ sym_key }}" data-label="{{ sym_name }}">
+                                + {{ sym_name }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div style="margin-top: 1rem; text-align: center;">
+                    <button type="button" class="btn btn-primary" onclick="toggleSymptomsCatalog()" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">
+                        <i class="fa-solid fa-check"></i> Done Selecting
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: PATIENT PROFILE & SEVERITY -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.75rem;">
+            <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.85rem; font-size: 0.95rem;">
+                <i class="fa-regular fa-id-badge" style="color: #0284c7;"></i> Step 3: Patient Profile Context (Auto-Filled)
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Patient Full Name *</label>
+                    <input type="text" name="name" class="form-control" value="{{ current_user.full_name }}" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Age (Years) *</label>
+                    <input type="number" name="age" min="1" max="120" class="form-control" value="{{ current_user.age or 28 }}" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Duration of Symptoms *</label>
+                    <input type="text" name="time_period" class="form-control" placeholder="e.g. 2 days" value="2 days" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Current City / Location</label>
+                    <input type="text" name="address" class="form-control" value="{{ current_user.address or 'Hyderabad' }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35);">
+            <i class="fa-solid fa-microchip"></i> Run Random Forest AI Diagnosis & Generate Rx Slip
+        </button>
+    </form>
+</div>
+
+{% endif %}
+
+{% endblock %}

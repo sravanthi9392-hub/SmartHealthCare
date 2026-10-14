@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Prescription Records | Doctor Portal{% endblock %}
+{% block header_title %}Clinical Prescriptions & Diagnostic Records{% endblock %}
+{% block header_subtitle %}Comprehensive audit of patient prescriptions and AI symptom analyses{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h3 class="card-title">
+                <i class="fa-solid fa-file-waveform" style="color: #0891b2;"></i> All Clinical Prescriptions & AI Diagnoses
+            </h3>
+            <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.2rem;">
+                Review clinical medications, prescribed dosages, and AI match scores for all patients.
+            </p>
+        </div>
+        <span class="badge badge-primary">{{ prescriptions|length }} Total Records</span>
+    </div>
+
+    {% if prescriptions %}
+    <div class="table-responsive">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th>Record ID</th>
+                    <th>Patient Name</th>
+                    <th>Diagnosed Condition</th>
+                    <th>Exact AI Match</th>
+                    <th>Severity</th>
+                    <th>Specialist</th>
+                    <th>Date</th>
+                    <th style="text-align: right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rx in prescriptions %}
+                <tr>
+                    <td><code>#SHC-{{ rx.id * 1000 + 42 }}</code></td>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ rx.patient_name }}</div>
+                        <small style="color: #64748b;">{{ rx.patient_age }} yrs &bull; {{ rx.patient_gender }}</small>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: #0369a1;">{{ rx.diagnosed_disease }}</div>
+                        <small style="color: #64748b;">{{ rx.symptoms[:40] }}{% if rx.symptoms|length > 40 %}...{% endif %}</small>
+                    </td>
+                    <td>
+                        <span class="badge badge-success" style="font-weight: 700;">
+                            <i class="fa-solid fa-microchip"></i> {{ rx.confidence_score }}% Match
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge {% if 'High' in rx.severity or 'Acute' in rx.severity %}badge-danger{% elif 'Moderate' in rx.severity %}badge-warning{% else %}badge-success{% endif %}">
+                            {{ rx.severity }}
+                        </span>
+                    </td>
+                    <td>
+                        <span style="color: #334155; font-weight: 600;">{{ rx.specialist }}</span>
+                    </td>
+                    <td>{{ rx.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                    <td style="text-align: right;">
+                        <a href="{{ url_for('view_prescription', record_id=rx.id) }}" class="btn btn-outline" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;">
+                            <i class="fa-solid fa-eye"></i> View Slip
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2.5rem; color: #64748b;">
+        <p>No prescription records found.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

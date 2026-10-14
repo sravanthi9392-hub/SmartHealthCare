@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if current_user.is_doctor %}Doctor Profile & Credentials | Smart Healthcare
+{% elif current_user.is_admin %}Administrator Profile & Security | Smart Healthcare
+{% else %}Patient Profile & Health ID | Smart Healthcare{% endif %}
+{% endblock %}
+
+{% block header_title %}
+{% if current_user.is_doctor %}Doctor Profile & Clinical Credentials
+{% elif current_user.is_admin %}Administrator Security Profile
+{% else %}Patient Health Profile & Digital ID{% endif %}
+{% endblock %}
+
+{% block header_subtitle %}
+{% if current_user.is_doctor %}Manage your verified credentials, clinical specialization, hospital affiliations, and consultation fees
+{% elif current_user.is_admin %}System administrator credentials and platform access controls
+{% else %}Maintain your permanent medical records, blood group & emergency contacts{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if current_user.is_doctor %}
+<!-- ====================================================================
+     DOCTOR PROFILE VIEW: ONLY CLINICAL INFORMATION & DOCTOR BADGE
+     ==================================================================== -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+
+    <!-- Doctor Clinical Credentials Form -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fa-solid fa-user-doctor" style="color: #0891b2;"></i> Doctor Professional Profile
+            </h2>
+            <span class="badge badge-doctor">License: MCI-{{ current_user.id * 1024 + 4820 }}</span>
+        </div>
+
+        <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Update your clinical credentials, department specialization, hospital affiliations, and outpatient consultation fees below.
+        </p>
+
+        <form method="POST" action="{{ url_for('profile') }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-regular fa-user"></i> Doctor Full Name (With Honorific)</label>
+                    <input type="text" name="full_name" class="form-control" value="{{ current_user.full_name }}" required placeholder="e.g. Dr. Anil Kumar">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-regular fa-envelope"></i> Professional Email (Read-Only)</label>
+                    <input type="email" class="form-control" value="{{ current_user.email }}" disabled style="background:#e2e8f0; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-phone"></i> Direct Contact Phone</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ current_user.phone or '' }}" placeholder="+91 9876543210">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-stethoscope" style="color:#0891b2;"></i> Clinical Specialization</label>
+                    <select name="specialization" class="form-control">
+                        {% for spec in ['General Medicine', 'Cardiology', 'Dermatology', 'Neurology', 'Pediatrics', 'Gastroenterology', 'Orthopedics', 'Pulmonology', 'Endocrinology', 'Psychiatry', 'Gynecology', 'ENT', 'Oncology', 'Ophthalmology', 'Nephrology'] %}
+                        <option value="{{ spec }}" {% if spec.lower() in (current_user.specialization or '').lower() or spec == current_user.specialization %}selected{% endif %}>
+                            {{ spec }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-indian-rupee-sign" style="color:#10b981;"></i> Consultation Fee (₹)</label>
+                    <input type="text" name="consultation_fee" class="form-control" value="{{ current_user.consultation_fee or '₹800' }}" placeholder="e.g. ₹800">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-solid fa-graduation-cap"></i> Medical Qualifications & Degrees</label>
+                    <input type="text" name="qualifications" class="form-control" value="{{ current_user.qualifications or '' }}" placeholder="e.g. MBBS, MD (General Medicine - AIIMS Delhi), FICP">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-solid fa-hospital"></i> Primary Hospital / Clinical Facility Affiliation</label>
+                    <input type="text" name="hospital" class="form-control" value="{{ current_user.hospital or '' }}" placeholder="e.g. Apollo Hospitals, Jubilee Hills, Hyderabad">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-solid fa-location-dot"></i> OPD Chamber / Clinic Address</label>
+                    <textarea name="address" class="form-control" rows="2" placeholder="e.g. Block A, 2nd Floor, OPD Room No. 204, Road No. 72, Jubilee Hills">{{ current_user.address or '' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 0.85rem 1.8rem; font-size: 1rem; margin-top: 1rem; background: linear-gradient(135deg, #0e7490, #0284c7);">
+                <i class="fa-solid fa-floppy-disk"></i> Save Doctor Credentials
+            </button>
+        </form>
+    </div>
+
+    <!-- Doctor Verified Digital ID Badge -->
+    <div>
+        <div class="card" style="background: linear-gradient(135deg, #083344 0%, #0e7490 100%); color: white; border: 1px solid #155e75; position: sticky; top: 90px; box-shadow: 0 20px 25px -5px rgba(8, 51, 68, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.05rem; color: #67e8f9;">
+                    <i class="fa-solid fa-shield-halved"></i> CLINICAL CREDENTIAL
+                </div>
+                <span class="badge" style="background: #10b981; color: white;">VERIFIED DOCTOR</span>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #0284c7); margin: 0 auto 0.75rem auto; display: flex; align-items: center; justify-content: center; font-size: 2.3rem; border: 3px solid #67e8f9; color: white;">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.2rem;">{{ current_user.full_name }}</h3>
+                <div style="color: #67e8f9; font-size: 0.875rem; font-weight: 700;">{{ current_user.specialization or 'Medical Consultant' }}</div>
+                <div style="color: #cbd5e1; font-size: 0.8rem; margin-top: 0.2rem;">{{ current_user.hospital or 'Apollo Hospitals Telehealth' }}</div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                <div>
+                    <div style="color: #a5f3fc; font-size: 0.75rem; text-transform: uppercase;">License No.</div>
+                    <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff;">MCI-{{ current_user.id * 1024 + 4820 }}</div>
+                </div>
+                <div>
+                    <div style="color: #a5f3fc; font-size: 0.75rem; text-transform: uppercase;">Consultation Fee</div>
+                    <div style="font-weight: 800; color: #34d399; font-size: 1.05rem;">{{ current_user.consultation_fee or '₹800' }}</div>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <div style="color: #a5f3fc; font-size: 0.75rem; text-transform: uppercase;">Degrees</div>
+                    <div style="font-weight: 600; color: #f1f5f9; font-size: 0.825rem;">{{ current_user.qualifications or 'MBBS, MD' }}</div>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <div style="color: #a5f3fc; font-size: 0.75rem; text-transform: uppercase;">Direct Contact</div>
+                    <div style="font-weight: 600; color: #fcd34d;">{{ current_user.phone or current_user.email }}</div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #94a3b8;">
+                <span>Digital Doctor ID</span>
+                <span style="color: #34d399;"><i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> Active OPD & Video</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% else %}
+<!-- ====================================================================
+     PATIENT HEALTH PROFILE VIEW & SAVED CLINICAL RECORDS
+     ==================================================================== -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+
+    <!-- Profile Edit Form -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">
+                <i class="fa-solid fa-id-card-clip" style="color: #0284c7;"></i> Patient Health Profile
+            </h2>
+            <span class="badge badge-primary">ID: SHC-{{ current_user.id * 1000 + 42 }}</span>
+        </div>
+
+        <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Maintain your health details below. These are automatically used to personalize AI diagnosis prescriptions and appointment bookings.
+        </p>
+
+        <form method="POST" action="{{ url_for('profile') }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-regular fa-user"></i> Full Legal Name</label>
+                    <input type="text" name="full_name" class="form-control" value="{{ current_user.full_name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-regular fa-envelope"></i> Email (Read-Only)</label>
+                    <input type="email" class="form-control" value="{{ current_user.email }}" disabled style="background:#e2e8f0; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-phone"></i> Contact Phone</label>
+                    <input type="tel" name="phone" class="form-control" value="{{ current_user.phone or '' }}" placeholder="+91 9876543210">
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-calendar-day"></i> Age (Years)</label>
+                    <input type="number" name="age" min="1" max="120" class="form-control" value="{{ current_user.age or 28 }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-venus-mars"></i> Gender</label>
+                    <select name="gender" class="form-control">
+                        <option value="Female" {% if current_user.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Male" {% if current_user.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Other" {% if current_user.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-droplet" style="color:#ef4444;"></i> Blood Group</label>
+                    <select name="blood_group" class="form-control">
+                        {% for bg in ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'] %}
+                        <option value="{{ bg }}" {% if current_user.blood_group == bg %}selected{% endif %}>{{ bg }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> Emergency Contact Person & Phone</label>
+                    <input type="text" name="emergency_contact" class="form-control" value="{{ current_user.emergency_contact or '' }}" placeholder="e.g. Ramesh Reddy (Father) - 9876543210">
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-solid fa-location-dot"></i> Residential Address</label>
+                    <textarea name="address" class="form-control" rows="2" placeholder="Full residential street, city, pin code">{{ current_user.address or '' }}</textarea>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-solid fa-notes-medical"></i> Known Allergies & Medical History</label>
+                    <textarea name="medical_history" class="form-control" rows="2" placeholder="e.g. Allergic to Penicillin, mild asthma, previous surgery">{{ current_user.medical_history or '' }}</textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 0.85rem 1.8rem; font-size: 1rem; margin-top: 1rem;">
+                <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
+            </button>
+        </form>
+    </div>
+
+    <!-- Digital Health ID Card Preview -->
+    <div>
+        <div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border: 1px solid #334155; position: sticky; top: 90px; box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 1rem; margin-bottom: 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.1rem; color: #38bdf8;">
+                    <i class="fa-solid fa-shield-halved"></i> SMART HEALTH ID
+                </div>
+                <span class="badge" style="background: #10b981; color: white;">VERIFIED</span>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #0284c7, #2563eb); margin: 0 auto 0.75rem auto; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; border: 3px solid #38bdf8;">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.2rem;">{{ current_user.full_name or 'Patient Name' }}</h3>
+                <div style="color: #94a3b8; font-size: 0.85rem;">{{ current_user.email }}</div>
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                <div>
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Blood Group</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: #f87171;">{{ current_user.blood_group or 'O+' }}</div>
+                </div>
+                <div>
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Age / Gender</div>
+                    <div style="font-weight: 700;">{{ current_user.age or 28 }} yrs / {{ current_user.gender or 'F' }}</div>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <div style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase;">Emergency Contact</div>
+                    <div style="font-weight: 600; color: #fbbf24;">{{ current_user.emergency_contact or 'Not set' }}</div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b;">
+                <span>Digital Patient Card</span>
+                <span>Valid: Lifetime</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ====================================================================
+     SAVED AI CLINICAL DIAGNOSES & PRESCRIPTION HISTORY (PATIENTS ONLY)
+     ==================================================================== -->
+<div class="card" style="margin-top: 2rem;">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fa-solid fa-clock-rotate-left" style="color: #0284c7;"></i> Saved AI Diagnoses & Medical Records
+        </h2>
+        <span class="badge badge-primary">{{ user_prescriptions|length }} Total Saved Records</span>
+    </div>
+
+    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.25rem;">
+        View your complete AI diagnosis history, confidence match percentages, and recommended medications. You can print official Rx slips or permanently delete unwanted/test records.
+    </p>
+
+    {% if user_prescriptions %}
+    <div style="overflow-x: auto;">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th style="min-width: 140px;">Date & Time</th>
+                    <th style="min-width: 180px;">Diagnosed Condition</th>
+                    <th>Exact AI Match</th>
+                    <th>Severity</th>
+                    <th>Specialist</th>
+                    <th style="min-width: 220px;">Reported Symptoms</th>
+                    <th style="text-align: right; min-width: 170px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rx in user_prescriptions %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ rx.created_at.strftime('%d %b %Y') }}</div>
+                        <small style="color: #64748b;">{{ rx.created_at.strftime('%I:%M %p') }}</small>
+                    </td>
+                    <td>
+                        <div style="font-weight: 800; color: #0369a1; font-size: 0.975rem;">{{ rx.diagnosed_disease }}</div>
+                        <span class="badge badge-primary" style="font-size: 0.725rem; margin-top: 0.2rem;">Rx #SHC-{{ rx.id * 432 + 1000 }}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-success" style="font-weight: 700; font-size: 0.85rem; padding: 0.35rem 0.65rem;">
+                            <i class="fa-solid fa-microchip"></i> {{ rx.confidence_score }}% Match
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge {% if 'High' in rx.severity or 'Acute' in rx.severity or 'Immediate' in rx.severity %}badge-danger{% elif 'Moderate' in rx.severity %}badge-warning{% else %}badge-success{% endif %}">
+                            {{ rx.severity }}
+                        </span>
+                    </td>
+                    <td>
+                        <span style="font-weight: 600; color: #334155; font-size: 0.875rem;">{{ rx.specialist }}</span>
+                    </td>
+                    <td>
+                        <span style="font-size: 0.825rem; color: #64748b; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="{{ rx.symptoms }}">
+                            {{ rx.symptoms }}
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                            <a href="{{ url_for('view_prescription', record_id=rx.id) }}" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.825rem;" title="View Prescription Slip">
+                                <i class="fa-solid fa-file-prescription"></i> View
+                            </a>
+                            <form method="POST" action="{{ url_for('delete_prescription', record_id=rx.id) }}" onsubmit="return confirm('Are you sure you want to permanently delete this diagnosis record for {{ rx.diagnosed_disease }}?');" style="display: inline;">
+                                <button type="submit" class="btn btn-outline" style="padding: 0.4rem 0.75rem; font-size: 0.825rem; color: #ef4444; border-color: #fca5a5;" title="Delete this diagnosis record">
+                                    <i class="fa-solid fa-trash-can"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem 1rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+        <i class="fa-solid fa-clipboard-check" style="font-size: 3rem; color: #94a3b8; margin-bottom: 0.85rem;"></i>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: #334155; margin-bottom: 0.3rem;">No Diagnoses Stored</h4>
+        <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">You do not have any saved clinical records. Start an AI diagnosis to test your symptoms.</p>
+        <a href="{{ url_for('prescription') }}" class="btn btn-primary">
+            <i class="fa-solid fa-stethoscope"></i> Start New Diagnosis
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

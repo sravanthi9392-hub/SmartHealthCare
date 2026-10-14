@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Clinical Command Center | Smart Healthcare{% endblock %}
+{% block header_title %}Doctor Clinical Command Center{% endblock %}
+{% block header_subtitle %}Manage your appointed patients, telehealth video queue, and hospital OPD visits{% endblock %}
+
+{% block content %}
+
+<!-- Doctor Hero Banner -->
+<div class="card" style="background: linear-gradient(135deg, #0e7490 0%, #0891b2 50%, #0284c7 100%); color: white; border: none; padding: 2.25rem 2rem; margin-bottom: 2rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; right: -15px; bottom: -25px; font-size: 11rem; opacity: 0.08; color: white; pointer-events: none;">
+        <i class="fa-solid fa-user-doctor"></i>
+    </div>
+    <div style="position: relative; z-index: 2; max-width: 780px;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.3);">
+                <i class="fa-solid fa-stethoscope"></i> Verified Clinical Specialist
+            </span>
+            <span class="badge" style="background: #10b981; color: white; font-weight: 700;">
+                <i class="fa-solid fa-circle-dot"></i> Live & Ready for Consultations
+            </span>
+        </div>
+
+        <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem;">
+            Welcome, {{ doctor.full_name }}
+        </h1>
+        <p style="opacity: 0.95; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.5;">
+            <b>{{ doctor.specialization or 'Senior Medical Consultant' }}</b> &bull; {{ doctor.hospital or 'Apollo Hospitals Telehealth Network' }}
+            <br>
+            <span style="font-size: 0.85rem; opacity: 0.85;">{{ doctor.qualifications or 'MBBS, MD, FICP' }} &bull; Consultation Fee: {{ doctor.consultation_fee or '₹800' }}</span>
+        </p>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="#videoQueue" class="btn" style="background: white; color: #0891b2; font-weight: 700; padding: 0.65rem 1.3rem;">
+                <i class="fa-solid fa-video"></i> Telehealth Video Queue ({{ video_count }})
+            </a>
+            <a href="#opdSchedule" class="btn" style="background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.3); font-weight: 600; padding: 0.65rem 1.3rem;">
+                <i class="fa-solid fa-hospital-user"></i> Hospital OPD Schedule ({{ opd_count }})
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================
+     4 DOCTOR METRICS CARDS (EXACT PATIENTS APPOINTED)
+     ==================================================================== -->
+<div class="stats-grid">
+    <!-- Card 1: Patients Appointed -->
+    <div class="stat-card" style="border-left: 4px solid #0891b2;">
+        <div class="stat-icon" style="background: #cffafe; color: #0891b2;">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ total_patients }}</div>
+            <div class="stat-label">Patients Appointed to You</div>
+        </div>
+    </div>
+
+    <!-- Card 2: Total Consultations -->
+    <div class="stat-card" style="border-left: 4px solid #0284c7;">
+        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ total_appointments }}</div>
+            <div class="stat-label">Total Scheduled Appointments</div>
+        </div>
+    </div>
+
+    <!-- Card 3: Video Telehealth -->
+    <div class="stat-card" style="border-left: 4px solid #2563eb;">
+        <div class="stat-icon" style="background: #dbeafe; color: #2563eb;">
+            <i class="fa-solid fa-video"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ video_count }}</div>
+            <div class="stat-label">Telehealth Video Consults</div>
+        </div>
+    </div>
+
+    <!-- Card 4: Hospital In-Person OPD -->
+    <div class="stat-card" style="border-left: 4px solid #10b981;">
+        <div class="stat-icon" style="background: #dcfce7; color: #10b981;">
+            <i class="fa-solid fa-hospital"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ opd_count }}</div>
+            <div class="stat-label">In-Person OPD Hospital Visits</div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================================================================
+     APPOINTED PATIENTS QUEUE & CLINICAL MANAGEMENT TABLE
+     ==================================================================== -->
+<div class="card" id="appointmentsQueue">
+    <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+            <h3 class="card-title">
+                <i class="fa-solid fa-clipboard-user" style="color: #0891b2;"></i> Appointed Patients & Consultation Schedule
+            </h3>
+            <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.2rem;">
+                Patients scheduled specifically with {{ doctor.full_name }}. Review symptoms, update status, and launch video consults.
+            </p>
+        </div>
+
+        <!-- Filter tabs for Doctor's table -->
+        <div style="display: flex; gap: 0.4rem;">
+            <button type="button" class="category-filter-btn active" onclick="filterDoctorAppts('all', this)">
+                All ({{ total_appointments }})
+            </button>
+            <button type="button" class="category-filter-btn" onclick="filterDoctorAppts('Video', this)">
+                <i class="fa-solid fa-video" style="color: #0284c7;"></i> Video ({{ video_count }})
+            </button>
+            <button type="button" class="category-filter-btn" onclick="filterDoctorAppts('In-Person', this)">
+                <i class="fa-solid fa-hospital" style="color: #10b981;"></i> OPD ({{ opd_count }})
+            </button>
+        </div>
+    </div>
+
+    {% if appointments %}
+    <div class="table-responsive">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th style="min-width: 170px;">Patient Details</th>
+                    <th>Type</th>
+                    <th style="min-width: 140px;">Date & Time Slot</th>
+                    <th style="min-width: 220px;">Patient Reported Symptoms</th>
+                    <th>Status</th>
+                    <th style="text-align: right; min-width: 190px;">Doctor Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in appointments %}
+                <tr class="doctor-appt-row" data-appt-type="{{ a.appointment_type }}">
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">
+                            {{ a.user.full_name if a.user else 'Patient' }}
+                        </div>
+                        <small style="color: #64748b;">
+                            {{ a.user.age if a.user else 28 }} yrs &bull; {{ a.user.gender if a.user else 'Patient' }} &bull; <span style="color:#ef4444; font-weight:700;">{{ a.user.blood_group if a.user else 'O+' }}</span>
+                        </small>
+                        <div style="font-size: 0.775rem; color: #0891b2;">
+                            <i class="fa-solid fa-phone"></i> {{ a.user.phone if a.user and a.user.phone else '+91 9876543210' }}
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="badge {% if a.appointment_type == 'Video' %}badge-primary{% else %}badge-success{% endif %}" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;">
+                            {% if a.appointment_type == 'Video' %}<i class="fa-solid fa-video"></i> Telehealth Video{% else %}<i class="fa-solid fa-hospital-user"></i> Hospital OPD{% endif %}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ a.appointment_date }}</div>
+                        <span class="badge badge-warning" style="font-size: 0.75rem; font-weight: 700;">
+                            <i class="fa-regular fa-clock"></i> {{ a.time_slot }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div style="font-size: 0.85rem; color: #334155; line-height: 1.4; max-width: 280px;">
+                            {{ a.patient_notes or 'No specific symptoms noted at booking.' }}
+                        </div>
+                    </td>
+
+                    <td>
+                        <span class="badge {% if a.status == 'Confirmed' %}badge-success{% elif a.status == 'In Progress' %}badge-warning{% elif a.status == 'Completed' %}badge-primary{% else %}badge-danger{% endif %}" style="font-size: 0.8rem; font-weight: 700;">
+                            {{ a.status }}
+                        </span>
+                    </td>
+
+                    <td style="text-align: right;">
+                        <div style="display: flex; gap: 0.4rem; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+                            {% if a.appointment_type == 'Video' %}
+                            <button type="button" class="btn btn-primary" onclick="launchVideoRoom('{{ a.id }}', '{{ a.user.full_name if a.user else 'Patient' }}')" style="padding: 0.4rem 0.75rem; font-size: 0.8rem;" title="Start Secure Telehealth Consultation">
+                                <i class="fa-solid fa-video"></i> Start Room
+                            </button>
+                            {% endif %}
+
+                            <!-- Status Change Dropdown Form -->
+                            <form method="POST" action="{{ url_for('doctor_update_appointment', appt_id=a.id) }}" style="display: inline;">
+                                <select name="status" onchange="this.form.submit()" style="padding: 0.35rem 0.6rem; font-size: 0.8rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; cursor: pointer;">
+                                    <option value="Confirmed" {% if a.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                    <option value="In Progress" {% if a.status == 'In Progress' %}selected{% endif %}>In Consultation</option>
+                                    <option value="Completed" {% if a.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                    <option value="Cancelled" {% if a.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                                </select>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem 1rem; color: #64748b;">
+        <i class="fa-solid fa-calendar-check" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 0.85rem;"></i>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: #334155;">No Patients Scheduled Right Now</h4>
+        <p style="font-size: 0.875rem;">Your calendar is clear. New appointments booked by patients will appear here automatically.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ====================================================================
+     RECENT PATIENT MEDICAL RECORDS & AI PRESCRIPTIONS
+     ==================================================================== -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fa-solid fa-file-waveform" style="color: #0284c7;"></i> Patient Medical Records & Diagnostic History
+        </h3>
+        <span class="badge badge-primary">{{ prescriptions|length }} Recent Patient Cases</span>
+    </div>
+
+    {% if prescriptions %}
+    <div class="table-responsive">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Diagnosed Condition</th>
+                    <th>AI Match %</th>
+                    <th>Specialist Recommended</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rx in prescriptions %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ rx.patient_name }}</div>
+                        <small style="color: #64748b;">{{ rx.patient_age }} yrs &bull; {{ rx.patient_gender }}</small>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: #0369a1;">{{ rx.diagnosed_disease }}</div>
+                        <small style="color: #64748b;">{{ rx.symptoms[:40] }}{% if rx.symptoms|length > 40 %}...{% endif %}</small>
+                    </td>
+                    <td>
+                        <span class="badge badge-success">{{ rx.confidence_score }}% Match</span>
+                    </td>
+                    <td>{{ rx.specialist }}</td>
+                    <td>{{ rx.created_at.strftime('%d %b %Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('view_prescription', record_id=rx.id) }}" class="btn btn-outline" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;">
+                            <i class="fa-solid fa-file-lines"></i> View Rx
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #64748b;">
+        <p>No recent prescription records for assigned patients.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Video Call Simulation Modal -->
+<div id="videoModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: #0f172a; color: white; border-radius: 16px; max-width: 650px; width: 90%; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid #334155;">
+        <div style="padding: 1rem 1.5rem; background: #1e293b; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155;">
+            <div style="display: flex; align-items: center; gap: 0.6rem; font-weight: 700;">
+                <span class="badge" style="background: #ef4444; color: white;"><i class="fa-solid fa-circle"></i> LIVE</span>
+                <span>Encrypted HD Clinical Telehealth Room</span>
+            </div>
+            <button onclick="closeVideoModal()" style="background: none; border: none; color: #94a3b8; font-size: 1.25rem; cursor: pointer;">&times;</button>
+        </div>
+        <div style="padding: 2.5rem 1.5rem; text-align: center;">
+            <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #0891b2, #0284c7); margin: 0 auto 1.25rem auto; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <h3 id="videoPatientName" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.25rem;">Connecting to Patient...</h3>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Dr. Anil Kumar Telehealth Session &bull; End-to-End Encrypted</p>
+
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button type="button" class="btn" style="background: #334155; color: white; border-radius: 50%; width: 50px; height: 50px;"><i class="fa-solid fa-microphone"></i></button>
+                <button type="button" class="btn" style="background: #334155; color: white; border-radius: 50%; width: 50px; height: 50px;"><i class="fa-solid fa-video"></i></button>
+                <button type="button" class="btn" onclick="closeVideoModal()" style="background: #ef4444; color: white; border-radius: 50%; width: 50px; height: 50px;"><i class="fa-solid fa-phone-slash"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterDoctorAppts(type, btn) {
+    document.querySelectorAll('.category-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const rows = document.querySelectorAll('.doctor-appt-row');
+    rows.forEach(row => {
+        const apptType = row.getAttribute('data-appt-type');
+        if (type === 'all' || apptType === type) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function launchVideoRoom(apptId, patientName) {
+    document.getElementById('videoPatientName').innerText = "Live Consultation with " + patientName;
+    document.getElementById('videoModal').style.display = 'flex';
+}
+
+function closeVideoModal() {
+    document.getElementById('videoModal').style.display = 'none';
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Logins & Registered Users | Admin Console{% endblock %}
+{% block header_title %}Patient Logins & User Management{% endblock %}
+{% block header_subtitle %}Track all registered patient accounts, logins, and clinical profiles{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fa-solid fa-users" style="color: #7c3aed;"></i> All Registered Patients ({{ users|length }})
+        </h3>
+        <span class="badge badge-admin">Master Patient Index</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Legal Name</th>
+                    <th>Email Address</th>
+                    <th>Age / Gender</th>
+                    <th>Blood Group</th>
+                    <th>Phone</th>
+                    <th>Emergency Contact</th>
+                    <th>Last Active Login</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td><code>#P-{{ u.id * 1000 + 42 }}</code></td>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ u.full_name }}</div>
+                        <small style="color: #64748b;">Role: {{ u.role|title }}</small>
+                    </td>
+                    <td><b>{{ u.email }}</b></td>
+                    <td>{{ u.age }} yrs • {{ u.gender }}</td>
+                    <td>
+                        <span class="badge badge-danger">{{ u.blood_group or 'O+' }}</span>
+                    </td>
+                    <td>{{ u.phone or 'Not provided' }}</td>
+                    <td>
+                        <small style="color: #d97706; font-weight: 600;">{{ u.emergency_contact or 'Not set' }}</small>
+                    </td>
+                    <td>
+                        <div style="font-size: 0.825rem; font-weight: 600; color: #059669;">
+                            {{ u.last_login.strftime('%d %b %Y, %I:%M %p') if u.last_login else 'Active' }}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

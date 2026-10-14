@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block title %}Video Consultation Specialists | Smart Healthcare{% endblock %}
+{% block header_title %}Telehealth Video Consultations{% endblock %}
+{% block header_subtitle %}Instant high-definition encrypted video appointments with certified clinical specialists{% endblock %}
+
+{% block content %}
+
+<!-- How It Works Flow -->
+<div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #bae6fd; padding: 1.25rem 1.75rem; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">1</div>
+                <span style="font-weight: 700; color: #0369a1; font-size: 0.9rem;">Choose Specialist</span>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #94a3b8; font-size: 0.8rem;"></i>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">2</div>
+                <span style="font-weight: 700; color: #0369a1; font-size: 0.9rem;">Pick Time Slot</span>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #94a3b8; font-size: 0.8rem;"></i>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">3</div>
+                <span style="font-weight: 700; color: #065f46; font-size: 0.9rem;">Instant HD Call & Rx Slip</span>
+            </div>
+        </div>
+        <div>
+            <span class="badge badge-success" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">
+                <i class="fa-solid fa-shield-halved"></i> 100% HIPAA Telehealth Encrypted
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Specialization Filter Bar & Live Search -->
+<div class="card" style="margin-bottom: 1.75rem; padding: 1.25rem 1.5rem; background: #ffffff;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="badge badge-primary" style="font-size: 0.775rem; font-weight: 700;">Specialist Directory</span>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 0;">
+                    <i class="fa-solid fa-filter" style="color: #0284c7;"></i> Filter Doctors by Specialization
+                </h3>
+            </div>
+            <p style="color: #64748b; font-size: 0.85rem; margin: 0.2rem 0 0 0;">
+                Click any specialization tag below or type keywords to instantly find verified telehealth specialists.
+            </p>
+        </div>
+
+        <!-- Search Bar & Doctor Counter Badge -->
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+                <input type="text" id="docSearchInput" placeholder="Search doctor, hospital, symptom..." oninput="filterDoctorsLive()" style="padding: 0.5rem 1rem 0.5rem 2.2rem; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.875rem; width: 260px; background: #f8fafc;">
+            </div>
+            <span id="docCountBadge" class="badge badge-primary" style="font-size: 0.825rem; font-weight: 700; padding: 0.45rem 0.85rem;">
+                {{ doctors|length }} Specialists
+            </span>
+        </div>
+    </div>
+
+    <!-- Specialization Filter Buttons (15 Categories) -->
+    <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;" id="specFilterContainer">
+        <button type="button" class="category-filter-btn active" data-spec="all" onclick="filterBySpecialization('all', this)">
+            <i class="fa-solid fa-layer-group"></i> All Specialists ({{ doctors|length }})
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="General Medicine" onclick="filterBySpecialization('General Medicine', this)">
+            <i class="fa-solid fa-stethoscope" style="color:#0284c7;"></i> General Medicine
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Cardiology" onclick="filterBySpecialization('Cardiology', this)">
+            <i class="fa-solid fa-heart-pulse" style="color:#ef4444;"></i> Cardiology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Dermatology" onclick="filterBySpecialization('Dermatology', this)">
+            <i class="fa-solid fa-hand-dots" style="color:#f59e0b;"></i> Dermatology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Neurology" onclick="filterBySpecialization('Neurology', this)">
+            <i class="fa-solid fa-brain" style="color:#8b5cf6;"></i> Neurology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Pediatrics" onclick="filterBySpecialization('Pediatrics', this)">
+            <i class="fa-solid fa-baby" style="color:#10b981;"></i> Pediatrics
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Gastroenterology" onclick="filterBySpecialization('Gastroenterology', this)">
+            <i class="fa-solid fa-apple-whole" style="color:#06b6d4;"></i> Gastroenterology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Orthopedics" onclick="filterBySpecialization('Orthopedics', this)">
+            <i class="fa-solid fa-bone" style="color:#d97706;"></i> Orthopedics
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Pulmonology" onclick="filterBySpecialization('Pulmonology', this)">
+            <i class="fa-solid fa-lungs" style="color:#0284c7;"></i> Pulmonology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Endocrinology" onclick="filterBySpecialization('Endocrinology', this)">
+            <i class="fa-solid fa-dna" style="color:#ec4899;"></i> Endocrinology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Psychiatry" onclick="filterBySpecialization('Psychiatry', this)">
+            <i class="fa-solid fa-head-side-virus" style="color:#6366f1;"></i> Psychiatry
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Gynecology" onclick="filterBySpecialization('Gynecology', this)">
+            <i class="fa-solid fa-venus" style="color:#f43f5e;"></i> Gynecology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="ENT" onclick="filterBySpecialization('ENT', this)">
+            <i class="fa-solid fa-ear-listen" style="color:#14b8a6;"></i> ENT
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Oncology" onclick="filterBySpecialization('Oncology', this)">
+            <i class="fa-solid fa-ribbon" style="color:#e11d48;"></i> Oncology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Ophthalmology" onclick="filterBySpecialization('Ophthalmology', this)">
+            <i class="fa-solid fa-eye" style="color:#3b82f6;"></i> Ophthalmology
+        </button>
+        <button type="button" class="category-filter-btn" data-spec="Nephrology" onclick="filterBySpecialization('Nephrology', this)">
+            <i class="fa-solid fa-kidneys" style="color:#7c3aed;"></i> Nephrology
+        </button>
+    </div>
+</div>
+
+<!-- Doctors Cards Grid -->
+<div id="doctorsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.75rem;">
+
+    {% for doc in doctors %}
+    <div class="card doc-card" data-spec="{{ doc.category }}" data-name="{{ doc.name|lower }}" data-hosp="{{ doc.hospital|lower }}" data-focus="{{ doc.focus|lower }}" data-qual="{{ doc.qualifications|lower }}" style="border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0;">
+        <div>
+            <!-- Header with Avatar, Name, Rating -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div style="width: 62px; height: 62px; border-radius: 16px; background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 1.2rem; color: #0f172a; font-weight: 800; margin-bottom: 0.15rem;">{{ doc.name }}</h4>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: #0284c7;">{{ doc.specialization }}</div>
+                        <div style="font-size: 0.775rem; color: #64748b;">{{ doc.qualifications }}</div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 800; color: #f59e0b; font-size: 0.95rem;">
+                        <i class="fa-solid fa-star"></i> {{ doc.rating }}
+                    </div>
+                    <small style="color: #64748b; font-size: 0.75rem;">{{ doc.reviews }}</small>
+                </div>
+            </div>
+
+            <!-- Doctor Specs & Badges -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.45rem;">
+                <div style="color: #334155;">
+                    <i class="fa-solid fa-hospital" style="width: 22px; color: #0284c7;"></i>
+                    <b>Affiliation:</b> {{ doc.hospital }}
+                </div>
+                <div style="color: #334155;">
+                    <i class="fa-solid fa-award" style="width: 22px; color: #10b981;"></i>
+                    <b>Experience:</b> {{ doc.experience }}
+                </div>
+                <div style="color: #334155;">
+                    <i class="fa-solid fa-language" style="width: 22px; color: #8b5cf6;"></i>
+                    <b>Languages:</b> {{ doc.languages }}
+                </div>
+                <div style="color: #334155;">
+                    <i class="fa-solid fa-bullseye" style="width: 22px; color: #f43f5e;"></i>
+                    <b>Focus Areas:</b> {{ doc.focus }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Price & Action Bar -->
+        <div style="border-top: 1px solid #f1f5f9; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;">
+            <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; display: block;">Video Teleconsult Fee</span>
+                <span style="font-size: 1.35rem; font-weight: 800; color: #0f172a;">{{ doc.fee }}</span>
+                <span class="badge badge-success" style="margin-left: 4px; font-size: 0.7rem;">{{ doc.next_slot }}</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="tel:{{ doc.phone }}" class="btn btn-outline" style="padding: 0.6rem 0.85rem;" title="Call Helpline">
+                    <i class="fa-solid fa-phone"></i>
+                </a>
+                <button class="btn btn-primary" style="padding: 0.65rem 1.15rem; font-size: 0.875rem;" onclick="openBookingModal('{{ doc.name }}', '{{ doc.specialization }}', '{{ doc.hospital }}', '{{ doc.phone }}', 'Video', '{{ doc.fee }}', 'Online HD Telehealth Room')">
+                    <i class="fa-solid fa-video"></i> Book Video Slot
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- Empty State if No Doctors Found -->
+<div id="noDoctorsFound" class="card" style="display: none; text-align: center; padding: 3rem 1.5rem; margin-top: 1rem; background: #f8fafc; border: 1px dashed #cbd5e1;">
+    <i class="fa-solid fa-user-slash" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+    <h3 style="font-size: 1.25rem; font-weight: 800; color: #334155; margin-bottom: 0.5rem;">No Specialists Found</h3>
+    <p style="color: #64748b; font-size: 0.9rem; max-width: 480px; margin: 0 auto 1.5rem auto;">
+        No doctors match the selected specialization or search keyword. Try selecting another department or reset your filters.
+    </p>
+    <button class="btn btn-primary" onclick="resetVideoFilters()">
+        <i class="fa-solid fa-rotate-left"></i> View All Specialists
+    </button>
+</div>
+
+<!-- Reusable Appointment Booking Modal -->
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">
+                <i class="fa-solid fa-calendar-plus" style="color: #0284c7;"></i> Book Video Consultation
+            </h3>
+            <span style="font-size: 1.5rem; cursor: pointer; color: #94a3b8;" onclick="closeBookingModal()">&times;</span>
+        </div>
+
+        <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-weight: 800; color: #0369a1; font-size: 1.05rem;" id="modalDocName">Doctor Name</div>
+                <div style="font-size: 0.85rem; color: #475569;" id="modalDocSpec">Specialization</div>
+                <div style="font-size: 0.8rem; color: #64748b;" id="modalDocHosp">Hospital</div>
+            </div>
+            <div style="text-align: right;">
+                <span class="badge badge-primary" style="font-size: 0.95rem; font-weight: 800; padding: 0.35rem 0.75rem;" id="modalDocFee">₹600</span>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('book_appointment') }}">
+            <input type="hidden" name="doctor_name" id="inputDocName">
+            <input type="hidden" name="specialization" id="inputDocSpec">
+            <input type="hidden" name="hospital" id="inputDocHosp">
+            <input type="hidden" name="phone" id="inputDocPhone">
+            <input type="hidden" name="appointment_type" id="inputAppType" value="Video">
+
+            <div class="form-group">
+                <label><i class="fa-regular fa-calendar"></i> Appointment Date *</label>
+                <input type="date" name="appointment_date" id="inputAppDate" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-regular fa-clock"></i> Preferred Video Slot *</label>
+                <select name="time_slot" class="form-control" required>
+                    <option value="10:00 AM - 10:30 AM (Morning)">10:00 AM - 10:30 AM (Morning)</option>
+                    <option value="11:30 AM - 12:00 PM (Morning)">11:30 AM - 12:00 PM (Morning)</option>
+                    <option value="02:30 PM - 03:00 PM (Afternoon)">02:30 PM - 03:00 PM (Afternoon)</option>
+                    <option value="04:00 PM - 04:30 PM (Evening)">04:00 PM - 04:30 PM (Evening)</option>
+                    <option value="06:00 PM - 06:30 PM (Evening)">06:00 PM - 06:30 PM (Evening)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-regular fa-message"></i> Chief Health Concerns / Reason for Consult</label>
+                <textarea name="patient_notes" class="form-control" rows="2" placeholder="Briefly describe what symptoms or questions you want to discuss..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeBookingModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Confirm Video Booking</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentSpec = 'all';
+
+function filterBySpecialization(spec, btn) {
+    currentSpec = spec;
+    document.querySelectorAll('#specFilterContainer .category-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) {
+        btn.classList.add('active');
+    } else {
+        const matchingBtn = document.querySelector(`#specFilterContainer [data-spec="${spec}"]`);
+        if (matchingBtn) matchingBtn.classList.add('active');
+    }
+    filterDoctorsLive();
+}
+
+function filterDoctorsLive() {
+    const searchEl = document.getElementById('docSearchInput');
+    const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+    const cards = document.querySelectorAll('.doc-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const spec = (card.getAttribute('data-spec') || '').toLowerCase().trim();
+        const name = (card.getAttribute('data-name') || '').toLowerCase();
+        const hosp = (card.getAttribute('data-hosp') || '').toLowerCase();
+        const focus = (card.getAttribute('data-focus') || '').toLowerCase();
+        const qual = (card.getAttribute('data-qual') || '').toLowerCase();
+
+        const matchesSpec = (currentSpec === 'all' || spec === currentSpec.toLowerCase().trim());
+        const matchesQuery = (!query || name.includes(query) || hosp.includes(query) || focus.includes(query) || qual.includes(query) || spec.includes(query));
+
+        if (matchesSpec && matchesQuery) {
+            card.style.display = 'flex';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const badge = document.getElementById('docCountBadge');
+    if (badge) {
+        badge.innerText = `${visibleCount} Specialists`;
+    }
+
+    const emptyBox = document.getElementById('noDoctorsFound');
+    if (emptyBox) {
+        emptyBox.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+}
+
+function resetVideoFilters() {
+    const searchEl = document.getElementById('docSearchInput');
+    if (searchEl) searchEl.value = '';
+    filterBySpecialization('all', document.querySelector('[data-spec="all"]'));
+}
+
+// Auto-check URL query parameter on load (e.g. ?spec=Cardiology)
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const specParam = urlParams.get('spec');
+    if (specParam) {
+        const btn = document.querySelector(`#specFilterContainer [data-spec="${specParam}"]`);
+        if (btn) {
+            filterBySpecialization(specParam, btn);
+        }
+    }
+});
+</script>
+{% endblock %}

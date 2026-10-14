@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Smart Healthcare Portal{% endblock %}
+{% block header_title %}Patient Command Center{% endblock %}
+{% block header_subtitle %}Overview of your AI diagnoses, appointments, and medical record{% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner -->
+<div class="card" style="background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%); color: white; border: none; padding: 2.25rem 2rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; right: -20px; bottom: -30px; font-size: 10rem; opacity: 0.1; color: white;">
+        <i class="fa-solid fa-notes-medical"></i>
+    </div>
+    <div style="position: relative; z-index: 2; max-width: 700px;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3);">
+                <i class="fa-solid fa-shield-heart"></i> Digital Health Portal Active
+            </span>
+            <span class="badge" style="background: #10b981; color: white;">
+                Blood Group: {{ current_user.blood_group or 'O+' }}
+            </span>
+        </div>
+        <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+            Welcome back, {{ current_user.full_name or 'Patient' }}!
+        </h1>
+        <p style="opacity: 0.9; font-size: 0.975rem; margin-bottom: 1.5rem;">
+            Your integrated clinical hub for Random Forest AI disease diagnosis, certified doctor consultations, and Smart Health Cafe nutrition plans.
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="{{ url_for('prescription') }}" class="btn btn-success" style="padding: 0.75rem 1.4rem;">
+                <i class="fa-solid fa-stethoscope"></i> Start New AI Diagnosis
+            </a>
+            <a href="{{ url_for('profile') }}" class="btn btn-outline" style="background: rgba(255, 255, 255, 0.15); color: white; border-color: rgba(255, 255, 255, 0.4);">
+                <i class="fa-solid fa-user-pen"></i> Update Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+            <i class="fa-solid fa-file-waveform"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ prescriptions|length }}</div>
+            <div class="stat-label">Saved AI Diagnoses</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dcfce7; color: #10b981;">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ appointments|length }}</div>
+            <div class="stat-label">Active Appointments</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fee2e2; color: #ef4444;">
+            <i class="fa-solid fa-droplet"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ current_user.blood_group or 'O+' }}</div>
+            <div class="stat-label">Registered Blood Type</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ current_user.age or 28 }} yrs</div>
+            <div class="stat-label">Patient Age & Profile</div>
+        </div>
+    </div>
+</div>
+
+<!-- Core Services Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0;">
+        <div>
+            <div style="font-size: 2.2rem; color: #0284c7; margin-bottom: 0.75rem;">🩺</div>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.4rem;">Smart AI Diagnosis</h3>
+            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                Select from 50+ clinical symptom indicators and receive ML diagnosis with medicine dosages and precautions.
+            </p>
+        </div>
+        <a href="{{ url_for('prescription') }}" class="btn btn-primary" style="width: 100%;">
+            Open Diagnosis <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0;">
+        <div>
+            <div style="font-size: 2.2rem; color: #2563eb; margin-bottom: 0.75rem;">🎥</div>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.4rem;">Video Consultation</h3>
+            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                Instant online consultations with certified physicians, cardiologists, and dermatologists.
+            </p>
+        </div>
+        <a href="{{ url_for('video_consultancy') }}" class="btn btn-primary" style="width: 100%;">
+            Consult Online <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0;">
+        <div>
+            <div style="font-size: 2.2rem; color: #10b981; margin-bottom: 0.75rem;">🏥</div>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.4rem;">Offline Hospital Visits</h3>
+            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                Book confirmed slots with Apollo, Care, and Yashoda Hospitals for in-person treatment.
+            </p>
+        </div>
+        <a href="{{ url_for('offline_doctor') }}" class="btn btn-primary" style="width: 100%;">
+            Book Hospital Slot <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0;">
+        <div>
+            <div style="font-size: 2.2rem; color: #f59e0b; margin-bottom: 0.75rem;">🥗</div>
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 0.4rem;">Smart Health Cafe</h3>
+            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                Evidence-based dietary recovery plans, breakfast/lunch/dinner guidelines, and guided physiotherapy.
+            </p>
+        </div>
+        <a href="{{ url_for('online_treatment') }}" class="btn btn-primary" style="width: 100%;">
+            Explore Nutrition <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Prescriptions & Appointments Split Grid -->
+<div style="display: grid; grid-template-columns: 3fr 2fr; gap: 1.5rem; margin-bottom: 2rem;">
+
+    <!-- Recent Prescriptions -->
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #0284c7;"></i> Recent Prescriptions & Diagnoses
+            </h3>
+            <a href="{{ url_for('prescription') }}" style="font-size: 0.875rem; font-weight: 600;">+ New Diagnosis</a>
+        </div>
+
+        {% if prescriptions %}
+        <div style="overflow-x: auto;">
+            <table class="rx-med-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Condition</th>
+                        <th>Confidence</th>
+                        <th>Specialist</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rx in prescriptions %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600; color: #0f172a;">{{ rx.created_at.strftime('%d %b %Y') }}</div>
+                            <small style="color: #64748b;">{{ rx.created_at.strftime('%I:%M %p') }}</small>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: #0369a1;">{{ rx.diagnosed_disease }}</div>
+                            <small style="color: #64748b;">{{ rx.symptoms[:35] }}{% if rx.symptoms|length > 35 %}...{% endif %}</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-success">{{ rx.confidence_score }}% Match</span>
+                        </td>
+                        <td>
+                            <span style="font-size: 0.85rem; color: #475569;">{{ rx.specialist }}</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.4rem; align-items: center;">
+                                <a href="{{ url_for('view_prescription', record_id=rx.id) }}" class="btn btn-outline" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-print"></i> View Rx
+                                </a>
+                                <form method="POST" action="{{ url_for('delete_prescription', record_id=rx.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this diagnosis record for {{ rx.diagnosed_disease }}?');">
+                                    <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.6rem; font-size: 0.8rem; color: #ef4444; border-color: #fca5a5;" title="Delete Record">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2.5rem 1rem; color: #64748b;">
+            <i class="fa-solid fa-notes-medical" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+            <p style="font-weight: 600; color: #334155; margin-bottom: 0.4rem;">No Prescriptions Generated Yet</p>
+            <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Enter symptoms into our AI diagnostic tool to generate your first medical prescription.</p>
+            <a href="{{ url_for('prescription') }}" class="btn btn-primary">Run First Diagnosis</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fa-solid fa-calendar-check" style="color: #10b981;"></i> My Appointments
+            </h3>
+        </div>
+
+        {% if appointments %}
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            {% for appt in appointments %}
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem;">
+                    <div style="font-weight: 700; color: #0f172a;">{{ appt.doctor_name }}</div>
+                    <span class="badge {% if appt.appointment_type == 'Video' %}badge-primary{% else %}badge-success{% endif %}">
+                        {{ appt.appointment_type }}
+                    </span>
+                </div>
+                <div style="font-size: 0.825rem; color: #0284c7; font-weight: 600; margin-bottom: 0.4rem;">
+                    {{ appt.specialization }} • {{ appt.hospital or 'Care Clinic' }}
+                </div>
+                <div style="font-size: 0.85rem; color: #475569; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-regular fa-calendar"></i> {{ appt.appointment_date }}
+                    <i class="fa-regular fa-clock" style="margin-left: 0.5rem;"></i> {{ appt.time_slot }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2.5rem 1rem; color: #64748b;">
+            <i class="fa-regular fa-calendar-xmark" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+            <p style="font-weight: 600; color: #334155; margin-bottom: 0.4rem;">No Scheduled Consultations</p>
+            <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Book a video consultation or direct hospital visit with available specialists.</p>
+            <a href="{{ url_for('video_consultancy') }}" class="btn btn-outline">Find Doctor</a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Emergency Section Banner -->
+<div style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: white; border-radius: 16px; padding: 1.75rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.25);">
+    <div>
+        <h3 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.25rem;">
+            <i class="fa-solid fa-truck-medical"></i> 24x7 Critical Medical Emergency Hotline
+        </h3>
+        <p style="opacity: 0.9; font-size: 0.9rem;">
+            For severe chest pressure, unconsciousness, heavy trauma, or extreme difficulty breathing.
+        </p>
+    </div>
+    <a href="tel:112" class="btn" style="background: white; color: #b91c1c; font-weight: 800; font-size: 1.1rem; padding: 0.8rem 1.6rem; border-radius: 12px;">
+        <i class="fa-solid fa-phone"></i> Emergency Call 112
+    </a>
+</div>
+
+{% endblock %}

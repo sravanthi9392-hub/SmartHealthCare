@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Portal Login | Smart Healthcare</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="auth-slider-container">
+    <div class="sliding-card-box">
+
+        <!-- ================================================================
+             LEFT HERO PANE WITH FLOATING MEDICAL STAT CARDS
+             ================================================================ -->
+        <div class="sliding-hero-pane">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
+                    <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #0284c7, #38bdf8); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: white;">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;">SmartHealthcare<span style="color: #38bdf8;">.AI</span></div>
+                        <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: 700;">Unified Medical Operating System</div>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 2.1rem; font-weight: 800; line-height: 1.25; margin-bottom: 1rem;">
+                    Intelligent Clinical Diagnosis & Health Cafe.
+                </h2>
+                <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 2.5rem; line-height: 1.6;">
+                    Experience medical care driven by 99.3% accurate Random Forest Machine Learning, certified hospital teleconsultations, and nutritional disease recovery plans.
+                </p>
+            </div>
+
+            <!-- Floating Feature Pills -->
+            <div>
+                <div class="floating-feature">
+                    <i class="fa-solid fa-microchip"></i>
+                    <div>
+                        <div style="font-weight: 700; color: white; font-size: 0.85rem;">Random Forest ML Engine</div>
+                        <div style="font-size: 0.775rem; color: #94a3b8;">50+ symptom indicators across 16 acute & chronic diseases</div>
+                    </div>
+                </div>
+
+                <div class="floating-feature">
+                    <i class="fa-solid fa-utensils"></i>
+                    <div>
+                        <div style="font-weight: 700; color: white; font-size: 0.85rem;">Smart Health Cafe Nutrition</div>
+                        <div style="font-size: 0.775rem; color: #94a3b8;">Clinical meal and hydration plans based on diagnosis</div>
+                    </div>
+                </div>
+
+                <div class="floating-feature">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <div>
+                        <div style="font-weight: 700; color: white; font-size: 0.85rem;">Triple Role Access Control</div>
+                        <div style="font-size: 0.775rem; color: #94a3b8;">Dedicated Portals for Patients, Doctors, and Hospital Administrators</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================
+             RIGHT AUTH FORM PANE WITH SLIDING TABS & DEMO AUTO-FILL
+             ================================================================ -->
+        <div class="auth-form-pane">
+            <!-- Sliding Role Tabs -->
+            <div class="role-slider">
+                <div class="role-tab active" id="tabPatient" onclick="switchLoginMode('patient')">
+                    <i class="fa-solid fa-user-injured"></i> Patient
+                </div>
+                <div class="role-tab" id="tabDoctor" onclick="switchLoginMode('doctor')">
+                    <i class="fa-solid fa-user-doctor"></i> Doctor
+                </div>
+                <div class="role-tab" id="tabAdmin" onclick="switchLoginMode('admin')">
+                    <i class="fa-solid fa-shield-halved"></i> Admin
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <h3 id="formTitle" style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">
+                    Sign in to Patient Portal
+                </h3>
+                <p id="formSubtitle" style="color: #64748b; font-size: 0.875rem;">
+                    Access your AI diagnoses, prescriptions, and appointments.
+                </p>
+            </div>
+
+            {% if error %}
+            <div style="background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label><i class="fa-regular fa-envelope"></i> Email / Username</label>
+                    <input type="email" id="emailInput" name="email" class="form-control" placeholder="user@example.com" value="user@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <label style="margin-bottom:0;"><i class="fa-solid fa-lock"></i> Password</label>
+                        <span style="font-size: 0.8rem; color: #0284c7; cursor: pointer;" onclick="togglePassword()">
+                            <i class="fa-regular fa-eye" id="toggleIcon"></i> Show
+                        </span>
+                    </div>
+                    <input type="password" id="passwordInput" name="password" class="form-control" placeholder="••••••••" value="password123" required>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 0.5rem;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Portal
+                </button>
+            </form>
+
+            <!-- Quick Demo Credentials Helpers -->
+            <div style="margin-top: 1.5rem; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 0.85rem 1rem;">
+                <div style="font-size: 0.775rem; font-weight: 700; color: #475569; margin-bottom: 0.6rem; text-transform: uppercase;">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> Quick 1-Click Demo Login:
+                </div>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-outline" style="flex: 1; padding: 0.45rem 0.5rem; font-size: 0.775rem;" onclick="fillCredentials('patient')">
+                        <i class="fa-solid fa-user"></i> Patient Demo
+                    </button>
+                    <button type="button" class="btn btn-outline" style="flex: 1; padding: 0.45rem 0.5rem; font-size: 0.775rem; color: #0891b2; border-color: #a5f3fc; background: #ecfeff;" onclick="fillCredentials('doctor')">
+                        <i class="fa-solid fa-stethoscope"></i> Doctor Demo
+                    </button>
+                    <button type="button" class="btn btn-outline" style="flex: 1; padding: 0.45rem 0.5rem; font-size: 0.775rem; color: #7c3aed; border-color: #c4b5fd; background: #faf5ff;" onclick="fillCredentials('admin')">
+                        <i class="fa-solid fa-shield-halved"></i> Admin Demo
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem; text-align: center;">
+                <a href="{{ url_for('download_project_pdf') }}" class="btn btn-outline" style="width: 100%; padding: 0.55rem; font-size: 0.825rem; color: #0284c7; border-color: #bae6fd; background: #f0f9ff; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;" title="Download Technical Project Documentation & Architecture PDF">
+                    <i class="fa-solid fa-file-pdf"></i> Download Project Documentation & Architecture PDF
+                </a>
+            </div>
+
+            <div id="signupFooter" style="margin-top: 1.25rem; text-align: center; font-size: 0.875rem; color: #64748b;">
+                New patient? <a href="{{ url_for('signup') }}" style="font-weight: 700; color: #0284c7;">Create Patient Profile</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function switchLoginMode(mode) {
+    const tabPatient = document.getElementById('tabPatient');
+    const tabDoctor = document.getElementById('tabDoctor');
+    const tabAdmin = document.getElementById('tabAdmin');
+    const title = document.getElementById('formTitle');
+    const subtitle = document.getElementById('formSubtitle');
+    const submitBtn = document.getElementById('submitBtn');
+    const signupFooter = document.getElementById('signupFooter');
+
+    // Remove active states from all
+    tabPatient.classList.remove('active');
+    tabDoctor.classList.remove('active', 'doctor-active');
+    tabAdmin.classList.remove('active', 'admin-active');
+
+    if (mode === 'admin') {
+        tabAdmin.classList.add('active', 'admin-active');
+        title.innerText = "Administrator Console Login";
+        subtitle.innerText = "System-wide analytics, patient registrations, and appointment audit.";
+        submitBtn.className = "btn btn-admin";
+        submitBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Access Admin Console';
+        signupFooter.style.display = 'none';
+        fillCredentials('admin');
+    } else if (mode === 'doctor') {
+        tabDoctor.classList.add('active', 'doctor-active');
+        title.innerText = "Doctor & Specialist Clinical Login";
+        subtitle.innerText = "Manage your appointed patients, telehealth video queue, and hospital OPD visits.";
+        submitBtn.className = "btn btn-doctor";
+        submitBtn.innerHTML = '<i class="fa-solid fa-stethoscope"></i> Access Doctor Portal';
+        signupFooter.style.display = 'none';
+        fillCredentials('doctor');
+    } else {
+        tabPatient.classList.add('active');
+        title.innerText = "Sign in to Patient Portal";
+        subtitle.innerText = "Access your AI diagnoses, prescriptions, and appointment bookings.";
+        submitBtn.className = "btn btn-primary";
+        submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Portal';
+        signupFooter.style.display = 'block';
+        fillCredentials('patient');
+    }
+}
+
+function fillCredentials(type) {
+    const email = document.getElementById('emailInput');
+    const pass = document.getElementById('passwordInput');
+
+    if (type === 'admin') {
+        email.value = 'polamsettiramu@gmail.com';
+        pass.value = 'admin@123';
+        if (!document.getElementById('tabAdmin').classList.contains('active')) {
+            switchLoginMode('admin');
+        }
+    } else if (type === 'doctor') {
+        email.value = 'dranil@smarthealth.com';
+        pass.value = 'doctor@123';
+        if (!document.getElementById('tabDoctor').classList.contains('active')) {
+            switchLoginMode('doctor');
+        }
+    } else {
+        email.value = 'user@example.com';
+        pass.value = 'password123';
+        if (!document.getElementById('tabPatient').classList.contains('active')) {
+            switchLoginMode('patient');
+        }
+    }
+}
+
+function togglePassword() {
+    const input = document.getElementById('passwordInput');
+    const icon = document.getElementById('toggleIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+
+</body>
+</html>

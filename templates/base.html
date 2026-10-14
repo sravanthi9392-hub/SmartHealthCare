@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Healthcare AI Platform{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="app-wrapper">
+
+    <!-- ====================================================================
+         FIXED LEFT SIDEBAR NAVIGATION
+         ==================================================================== -->
+    <aside class="left-sidebar">
+        <!-- Sidebar Brand Header -->
+        <div class="sidebar-header">
+            <a href="{% if current_user and current_user.is_admin %}{{ url_for('admin_dashboard') }}{% elif current_user and current_user.is_doctor %}{{ url_for('doctor_dashboard') }}{% else %}{{ url_for('dashboard') }}{% endif %}" class="sidebar-brand">
+                <div class="sidebar-icon {% if current_user and current_user.is_admin %}admin-icon{% elif current_user and current_user.is_doctor %}doctor-icon{% endif %}">
+                    <i class="fa-solid {% if current_user and current_user.is_admin %}fa-shield-halved{% elif current_user and current_user.is_doctor %}fa-user-doctor{% else %}fa-notes-medical{% endif %}"></i>
+                </div>
+                <div>
+                    <div>SmartHealthcare</div>
+                    <div style="font-size: 0.725rem; font-weight: 600; color: {% if current_user and current_user.is_admin %}#c084fc{% elif current_user and current_user.is_doctor %}#22d3ee{% else %}#38bdf8{% endif %};">
+                        {% if current_user and current_user.is_admin %}ADMIN CONSOLE{% elif current_user and current_user.is_doctor %}DOCTOR PORTAL{% else %}PATIENT PORTAL{% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Sidebar Navigation Items -->
+        <div class="sidebar-nav">
+            {% if current_user and current_user.is_admin %}
+                <!-- Admin Menus -->
+                <div class="sidebar-section-title">Admin Management</div>
+
+                <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item admin-item {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Admin Overview</span>
+                </a>
+
+                <a href="{{ url_for('admin_users') }}" class="sidebar-item admin-item {% if request.endpoint == 'admin_users' %}active{% endif %}">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Patient Logins & Users</span>
+                </a>
+
+                <a href="{{ url_for('admin_appointments') }}" class="sidebar-item admin-item {% if request.endpoint == 'admin_appointments' %}active{% endif %}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>All Appointments</span>
+                </a>
+
+                <a href="{{ url_for('admin_prescriptions') }}" class="sidebar-item admin-item {% if request.endpoint == 'admin_prescriptions' %}active{% endif %}">
+                    <i class="fa-solid fa-file-waveform"></i>
+                    <span>All Prescriptions</span>
+                </a>
+
+                <div class="sidebar-section-title">Personal</div>
+
+                <a href="{{ url_for('profile') }}" class="sidebar-item {% if request.endpoint == 'profile' %}active{% endif %}">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>Admin Profile</span>
+                </a>
+
+            {% elif current_user and current_user.is_doctor %}
+                <!-- Doctor Portal Menus: KEEP ONLY DASHBOARD AND PROFILE -->
+                <div class="sidebar-section-title">Clinical Hub</div>
+
+                <a href="{{ url_for('doctor_dashboard') }}" class="sidebar-item doctor-item {% if request.endpoint == 'doctor_dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-stethoscope"></i>
+                    <span>Doctor Dashboard</span>
+                </a>
+
+                <div class="sidebar-section-title">Account</div>
+
+                <a href="{{ url_for('profile') }}" class="sidebar-item {% if request.endpoint == 'profile' %}active{% endif %}">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>Doctor Profile</span>
+                </a>
+
+            {% else %}
+                <!-- Patient / User Menus -->
+                <div class="sidebar-section-title">Clinical Hub</div>
+
+                <a href="{{ url_for('dashboard') }}" class="sidebar-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{{ url_for('prescription') }}" class="sidebar-item {% if request.endpoint in ['prescription', 'view_prescription'] %}active{% endif %}">
+                    <i class="fa-solid fa-stethoscope"></i>
+                    <span>AI Diagnosis & Rx</span>
+                </a>
+
+                <a href="{{ url_for('video_consultancy') }}" class="sidebar-item {% if request.endpoint == 'video_consultancy' %}active{% endif %}">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Video Consultant</span>
+                </a>
+
+                <a href="{{ url_for('offline_doctor') }}" class="sidebar-item {% if request.endpoint == 'offline_doctor' %}active{% endif %}">
+                    <i class="fa-solid fa-hospital-user"></i>
+                    <span>Hospital OPD Visit</span>
+                </a>
+
+                <a href="{{ url_for('online_treatment') }}" class="sidebar-item {% if request.endpoint == 'online_treatment' %}active{% endif %}">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>Smart Health Cafe</span>
+                </a>
+
+                <div class="sidebar-section-title">Account</div>
+
+                <a href="{{ url_for('profile') }}" class="sidebar-item {% if request.endpoint == 'profile' %}active{% endif %}">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                    <span>My Health Profile</span>
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar Footer & Logged-In User Profile Pill -->
+        {% if current_user %}
+        <div class="sidebar-footer">
+            <div class="sidebar-user-card">
+                <div style="display: flex; align-items: center; gap: 0.65rem; min-width: 0;">
+                    <div class="sidebar-avatar {% if current_user.is_admin %}admin-avatar{% elif current_user.is_doctor %}doctor-avatar{% endif %}">
+                        {{ current_user.full_name[0] if current_user.full_name else 'U' }}
+                    </div>
+                    <div style="min-width: 0;">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ current_user.full_name }}
+                        </div>
+                        <div style="font-size: 0.725rem; color: #94a3b8;">
+                            {% if current_user.is_admin %}
+                                <span class="badge badge-admin" style="padding: 1px 6px;">Admin</span>
+                            {% elif current_user.is_doctor %}
+                                <span class="badge badge-doctor" style="padding: 1px 6px;">Doctor</span>
+                            {% else %}
+                                <span class="badge badge-primary" style="padding: 1px 6px;">{{ current_user.blood_group or 'O+' }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{{ url_for('logout') }}" class="btn btn-outline" style="width: 100%; padding: 0.45rem; font-size: 0.8rem; background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </a>
+        </div>
+        {% endif %}
+    </aside>
+
+    <!-- ====================================================================
+         MAIN APP CONTENT (RIGHT SIDE)
+         ==================================================================== -->
+    <div class="app-main">
+        <!-- Top App Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>{% block header_title %}Smart Healthcare Platform{% endblock %}</h1>
+                <p>{% block header_subtitle %}AI Diagnosis, Doctor Consultations & Smart Health Cafe{% endblock %}</p>
+            </div>
+            <div class="header-right">
+                <a href="{{ url_for('download_project_pdf') }}" class="btn btn-outline" style="font-size: 0.825rem; padding: 0.4rem 0.85rem; color: #0284c7; border-color: #bae6fd; background: #f0f9ff;" title="Download Technical Project Documentation & Architecture PDF">
+                    <i class="fa-solid fa-file-pdf"></i> Download Project PDF
+                </a>
+                <span class="badge badge-success">
+                    <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i> System Live
+                </span>
+                <a href="tel:112" class="btn btn-outline" style="color: #ef4444; border-color: #fca5a5; background: #fee2e2; font-size: 0.825rem; padding: 0.4rem 0.85rem;">
+                    <i class="fa-solid fa-truck-medical"></i> Emergency 112
+                </a>
+            </div>
+        </header>
+
+        <!-- Content Body -->
+        <main class="content-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="card" style="padding: 0.85rem 1.25rem; margin-bottom: 1.5rem; background: {% if category == 'success' %}#d1fae5; border-color:#6ee7b7; color:#065f46;{% else %}#fee2e2; border-color:#fca5a5; color:#991b1b;{% endif %}; font-weight: 500;">
+                            <i class="fa-solid {% if category == 'success' %}fa-circle-check{% else %}fa-triangle-exclamation{% endif %}" style="margin-right: 0.5rem;"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

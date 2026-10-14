@@ -1,0 +1,841 @@
+{% extends "base.html" %}
+
+{% block title %}Administrator Command Center | Smart Healthcare
+<!-- Chart.js Interactive Analytics Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const monthlyLabels = {{ monthly_labels|safe }};
+    const monthlyValues = {{ monthly_values|safe }};
+
+    const diseaseLabels = {{ disease_labels|safe }};
+    const diseaseValues = {{ disease_values|safe }};
+
+    const consultLabels = {{ consultation_labels|safe }};
+    const consultValues = {{ consultation_values|safe }};
+
+    const palette = ['#0284c7', '#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'];
+
+    // 1. Monthly Usage Line Chart
+    const ctxMonthly = document.getElementById('monthlyUsageChart');
+    if (ctxMonthly && monthlyLabels.length > 0) {
+        const ctx2d = ctxMonthly.getContext('2d');
+        const gradient = ctx2d.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, 'rgba(2, 132, 199, 0.35)');
+        gradient.addColorStop(1, 'rgba(2, 132, 199, 0.00)');
+
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Active Patients & Consultations',
+                    data: monthlyValues,
+                    borderColor: '#0284c7',
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0284c7',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11, weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { size: 11, weight: '600' } }
+                    },
+                    tooltip: {
+                        padding: 10,
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 12, weight: '700' },
+                        bodyFont: { size: 12 }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Disease Distribution Doughnut Chart
+    const ctxDisease = document.getElementById('diseaseChart');
+    if (ctxDisease && diseaseLabels.length > 0) {
+        new Chart(ctxDisease, {
+            type: 'doughnut',
+            data: {
+                labels: diseaseLabels,
+                datasets: [{
+                    data: diseaseValues,
+                    backgroundColor: palette.slice(0, diseaseLabels.length),
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 11 }, padding: 8 }
+                    }
+                },
+                cutout: '58%'
+            }
+        });
+    }
+
+    // 3. Modality Bar Chart
+    const ctxModality = document.getElementById('modalityChart');
+    if (ctxModality) {
+        new Chart(ctxModality, {
+            type: 'bar',
+            data: {
+                labels: consultLabels,
+                datasets: [{
+                    label: 'Patient Consultations',
+                    data: consultValues,
+                    backgroundColor: ['#0284c7', '#10b981'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}
+{% block header_title %}Administrator Command Center
+<!-- Chart.js Interactive Analytics Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const monthlyLabels = {{ monthly_labels|safe }};
+    const monthlyValues = {{ monthly_values|safe }};
+
+    const diseaseLabels = {{ disease_labels|safe }};
+    const diseaseValues = {{ disease_values|safe }};
+
+    const consultLabels = {{ consultation_labels|safe }};
+    const consultValues = {{ consultation_values|safe }};
+
+    const palette = ['#0284c7', '#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'];
+
+    // 1. Monthly Usage Line Chart
+    const ctxMonthly = document.getElementById('monthlyUsageChart');
+    if (ctxMonthly && monthlyLabels.length > 0) {
+        const ctx2d = ctxMonthly.getContext('2d');
+        const gradient = ctx2d.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, 'rgba(2, 132, 199, 0.35)');
+        gradient.addColorStop(1, 'rgba(2, 132, 199, 0.00)');
+
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Active Patients & Consultations',
+                    data: monthlyValues,
+                    borderColor: '#0284c7',
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0284c7',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11, weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { size: 11, weight: '600' } }
+                    },
+                    tooltip: {
+                        padding: 10,
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 12, weight: '700' },
+                        bodyFont: { size: 12 }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Disease Distribution Doughnut Chart
+    const ctxDisease = document.getElementById('diseaseChart');
+    if (ctxDisease && diseaseLabels.length > 0) {
+        new Chart(ctxDisease, {
+            type: 'doughnut',
+            data: {
+                labels: diseaseLabels,
+                datasets: [{
+                    data: diseaseValues,
+                    backgroundColor: palette.slice(0, diseaseLabels.length),
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 11 }, padding: 8 }
+                    }
+                },
+                cutout: '58%'
+            }
+        });
+    }
+
+    // 3. Modality Bar Chart
+    const ctxModality = document.getElementById('modalityChart');
+    if (ctxModality) {
+        new Chart(ctxModality, {
+            type: 'bar',
+            data: {
+                labels: consultLabels,
+                datasets: [{
+                    label: 'Patient Consultations',
+                    data: consultValues,
+                    backgroundColor: ['#0284c7', '#10b981'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}
+{% block header_subtitle %}System-wide Analytics, Patient Logins & Clinical Appointment Management
+<!-- Chart.js Interactive Analytics Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const monthlyLabels = {{ monthly_labels|safe }};
+    const monthlyValues = {{ monthly_values|safe }};
+
+    const diseaseLabels = {{ disease_labels|safe }};
+    const diseaseValues = {{ disease_values|safe }};
+
+    const consultLabels = {{ consultation_labels|safe }};
+    const consultValues = {{ consultation_values|safe }};
+
+    const palette = ['#0284c7', '#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'];
+
+    // 1. Monthly Usage Line Chart
+    const ctxMonthly = document.getElementById('monthlyUsageChart');
+    if (ctxMonthly && monthlyLabels.length > 0) {
+        const ctx2d = ctxMonthly.getContext('2d');
+        const gradient = ctx2d.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, 'rgba(2, 132, 199, 0.35)');
+        gradient.addColorStop(1, 'rgba(2, 132, 199, 0.00)');
+
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Active Patients & Consultations',
+                    data: monthlyValues,
+                    borderColor: '#0284c7',
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0284c7',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11, weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { size: 11, weight: '600' } }
+                    },
+                    tooltip: {
+                        padding: 10,
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 12, weight: '700' },
+                        bodyFont: { size: 12 }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Disease Distribution Doughnut Chart
+    const ctxDisease = document.getElementById('diseaseChart');
+    if (ctxDisease && diseaseLabels.length > 0) {
+        new Chart(ctxDisease, {
+            type: 'doughnut',
+            data: {
+                labels: diseaseLabels,
+                datasets: [{
+                    data: diseaseValues,
+                    backgroundColor: palette.slice(0, diseaseLabels.length),
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 11 }, padding: 8 }
+                    }
+                },
+                cutout: '58%'
+            }
+        });
+    }
+
+    // 3. Modality Bar Chart
+    const ctxModality = document.getElementById('modalityChart');
+    if (ctxModality) {
+        new Chart(ctxModality, {
+            type: 'bar',
+            data: {
+                labels: consultLabels,
+                datasets: [{
+                    label: 'Patient Consultations',
+                    data: consultValues,
+                    backgroundColor: ['#0284c7', '#10b981'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+<!-- Admin Hero Banner -->
+<div class="card" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; border: none; padding: 2rem 2.25rem; margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;">
+                <span class="badge" style="background: rgba(255, 255, 255, 0.2); color: white;">
+                    <i class="fa-solid fa-shield-halved"></i> Master System Administrative Console
+                </span>
+                <span class="badge" style="background: #10b981; color: white;">
+                    Database: Online
+                </span>
+            </div>
+            <h2 style="font-size: 1.85rem; font-weight: 800; margin-bottom: 0.25rem;">
+                Welcome, {{ current_user.full_name }}
+            </h2>
+            <p style="opacity: 0.9; font-size: 0.925rem; max-width: 650px;">
+                You are managing the central Smart Healthcare platform. Track all user logins, verify hospital appointments, and audit Random Forest ML diagnostic records.
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('admin_appointments') }}" class="btn" style="background: white; color: #4f46e5; font-weight: 700; padding: 0.75rem 1.4rem;">
+                <i class="fa-solid fa-list-check"></i> Manage Appointments
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Key Metrics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #ede9fe; color: #7c3aed;">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ total_users }}</div>
+            <div class="stat-label">Registered Patients</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dbeafe; color: #0284c7;">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ total_appointments }}</div>
+            <div class="stat-label">Total Appointments Booked</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #dcfce7; color: #10b981;">
+            <i class="fa-solid fa-stethoscope"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ total_prescriptions }}</div>
+            <div class="stat-label">AI Diagnoses Generated</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fee2e2; color: #ef4444;">
+            <i class="fa-solid fa-video"></i>
+        </div>
+        <div>
+            <div class="stat-val">{{ video_count }} / {{ offline_count }}</div>
+            <div class="stat-label">Video / OPD Visits</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ====================================================================
+     ADMINISTRATIVE DATA VISUALIZATIONS & CHARTS (Chart.js)
+     ==================================================================== -->
+<div style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <div>
+            <h3 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem;">
+                <i class="fa-solid fa-chart-line" style="color: #0284c7;"></i> Platform Usage & Clinical Intelligence
+            </h3>
+            <p style="color: #64748b; font-size: 0.875rem;">
+                Monthly patient usage growth trend, top diagnosed clinical conditions, and consultation modality.
+            </p>
+        </div>
+        <span class="badge badge-admin" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+            <i class="fa-solid fa-bolt"></i> Live Analytics Engine
+        </span>
+    </div>
+
+    <!-- 1. MONTHLY PATIENT USAGE LINE CHART (Full Width) -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card-header" style="margin-bottom: 0.85rem; padding-bottom: 0.65rem;">
+            <div>
+                <h4 style="font-size: 1.05rem; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-users-line" style="color: #0284c7;"></i> Monthly Patient Platform Usage & Consultations Growth
+                </h4>
+                <small style="color: #64748b; font-size: 0.825rem;">Total active patient visits, AI prescriptions, and hospital appointments per month</small>
+            </div>
+            <span class="badge badge-primary" style="font-size: 0.775rem;">
+                <i class="fa-solid fa-arrow-trend-up"></i> Monthly Trend
+            </span>
+        </div>
+        <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="monthlyUsageChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 2. TWO HIGH-SIGNAL CLINICAL CHARTS (Side-by-Side) -->
+    <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.5rem;">
+        <!-- Chart A: Top Diagnosed Clinical Conditions -->
+        <div class="card" style="margin-bottom: 0;">
+            <div class="card-header" style="margin-bottom: 0.85rem; padding-bottom: 0.65rem;">
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-viruses" style="color: #7c3aed;"></i> Top Diagnosed Conditions
+                </h4>
+                <small style="color: #64748b; font-weight: 600;">Prevalence Ratio</small>
+            </div>
+            <div style="position: relative; height: 260px; width: 100%;">
+                <canvas id="diseaseChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Chart B: Consultation Channels (Telehealth vs Hospital Visits) -->
+        <div class="card" style="margin-bottom: 0;">
+            <div class="card-header" style="margin-bottom: 0.85rem; padding-bottom: 0.65rem;">
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-hospital-user" style="color: #10b981;"></i> Consultation Channel Breakdown
+                </h4>
+                <small style="color: #64748b; font-weight: 600;">Telehealth vs Hospital</small>
+            </div>
+            <div style="position: relative; height: 260px; width: 100%;">
+                <canvas id="modalityChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Two-Column Trackers Grid -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-bottom: 2rem;">
+
+    <!-- Recent Patient Logins & Registrations Tracker -->
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fa-solid fa-user-clock" style="color: #7c3aed;"></i> Patient Logins & Users
+            </h3>
+            <a href="{{ url_for('admin_users') }}" style="font-size: 0.85rem; font-weight: 700;">View All ({{ total_users }})</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="rx-med-table">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Email & Phone</th>
+                        <th>Blood Group</th>
+                        <th>Last Login</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in recent_users %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700; color: #0f172a;">{{ u.full_name }}</div>
+                            <small style="color: #64748b;">{{ u.age }} yrs  {{ u.gender }}</small>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem;">{{ u.email }}</div>
+                            <small style="color: #64748b;">{{ u.phone or 'No phone' }}</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-danger">{{ u.blood_group or 'O+' }}</span>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.825rem; color: #334155;">{{ u.last_login.strftime('%d %b, %I:%M %p') if u.last_login else 'Active' }}</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Live Appointments Tracker -->
+    <div class="card" style="margin-bottom: 0;">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fa-solid fa-calendar-days" style="color: #0284c7;"></i> Live Appointments Tracker
+            </h3>
+            <a href="{{ url_for('admin_appointments') }}" style="font-size: 0.85rem; font-weight: 700;">Manage ({{ total_appointments }})</a>
+        </div>
+
+        {% if recent_appointments %}
+        <div class="table-responsive">
+            <table class="rx-med-table">
+                <thead>
+                    <tr>
+                        <th>Doctor & Hospital</th>
+                        <th>Date & Time</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in recent_appointments %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700; color: #0f172a;">{{ a.doctor_name }}</div>
+                            <small style="color: #64748b;">{{ a.specialization }}  {{ a.hospital }}</small>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem; font-weight: 600;">{{ a.appointment_date }}</div>
+                            <small style="color: #64748b;">{{ a.time_slot }}</small>
+                        </td>
+                        <td>
+                            <span class="badge {% if a.appointment_type == 'Video' %}badge-primary{% else %}badge-success{% endif %}">
+                                {{ a.appointment_type }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge {% if a.status == 'Confirmed' %}badge-success{% elif a.status == 'Completed' %}badge-primary{% else %}badge-danger{% endif %}">
+                                {{ a.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; color: #64748b;">
+            <i class="fa-regular fa-calendar-xmark" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 0.75rem;"></i>
+            <p>No appointments booked in the system yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Recent AI Prescriptions System-Wide Audit -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fa-solid fa-clipboard-check" style="color: #10b981;"></i> System-Wide AI Diagnoses & Prescriptions Audit
+        </h3>
+        <a href="{{ url_for('admin_prescriptions') }}" style="font-size: 0.85rem; font-weight: 700;">View Full Audit Log</a>
+    </div>
+
+    {% if recent_prescriptions %}
+    <div class="table-responsive">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th>Record ID</th>
+                    <th>Patient Name</th>
+                    <th>Diagnosed Condition</th>
+                    <th>ML Confidence</th>
+                    <th>Specialist Recommended</th>
+                    <th>Date Generated</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rx in recent_prescriptions %}
+                <tr>
+                    <td><code>#SHC-{{ rx.id * 1000 + 42 }}</code></td>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ rx.patient_name }}</div>
+                        <small style="color: #64748b;">{{ rx.patient_age }} yrs  {{ rx.patient_gender }}</small>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: #0369a1;">{{ rx.diagnosed_disease }}</div>
+                        <small style="color: #64748b;">{{ rx.symptoms[:40] }}{% if rx.symptoms|length > 40 %}...{% endif %}</small>
+                    </td>
+                    <td>
+                        <span class="badge badge-success">{{ rx.confidence_score }}% Match</span>
+                    </td>
+                    <td>{{ rx.specialist }}</td>
+                    <td>{{ rx.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                    <td>
+                        <a href="{{ url_for('view_prescription', record_id=rx.id) }}" class="btn btn-outline" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;">
+                            <i class="fa-solid fa-eye"></i> View Rx
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #64748b;">
+        <p>No prescriptions generated by patients yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+
+<!-- Chart.js Interactive Analytics Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const monthlyLabels = {{ monthly_labels|safe }};
+    const monthlyValues = {{ monthly_values|safe }};
+
+    const diseaseLabels = {{ disease_labels|safe }};
+    const diseaseValues = {{ disease_values|safe }};
+
+    const consultLabels = {{ consultation_labels|safe }};
+    const consultValues = {{ consultation_values|safe }};
+
+    const palette = ['#0284c7', '#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6'];
+
+    // 1. Monthly Usage Line Chart
+    const ctxMonthly = document.getElementById('monthlyUsageChart');
+    if (ctxMonthly && monthlyLabels.length > 0) {
+        const ctx2d = ctxMonthly.getContext('2d');
+        const gradient = ctx2d.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, 'rgba(2, 132, 199, 0.35)');
+        gradient.addColorStop(1, 'rgba(2, 132, 199, 0.00)');
+
+        new Chart(ctxMonthly, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Active Patients & Consultations',
+                    data: monthlyValues,
+                    borderColor: '#0284c7',
+                    borderWidth: 3,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.35,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0284c7',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11, weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { size: 11, weight: '600' } }
+                    },
+                    tooltip: {
+                        padding: 10,
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 12, weight: '700' },
+                        bodyFont: { size: 12 }
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Disease Distribution Doughnut Chart
+    const ctxDisease = document.getElementById('diseaseChart');
+    if (ctxDisease && diseaseLabels.length > 0) {
+        new Chart(ctxDisease, {
+            type: 'doughnut',
+            data: {
+                labels: diseaseLabels,
+                datasets: [{
+                    data: diseaseValues,
+                    backgroundColor: palette.slice(0, diseaseLabels.length),
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 10, font: { size: 11 }, padding: 8 }
+                    }
+                },
+                cutout: '58%'
+            }
+        });
+    }
+
+    // 3. Modality Bar Chart
+    const ctxModality = document.getElementById('modalityChart');
+    if (ctxModality) {
+        new Chart(ctxModality, {
+            type: 'bar',
+            data: {
+                labels: consultLabels,
+                datasets: [{
+                    label: 'Patient Consultations',
+                    data: consultValues,
+                    backgroundColor: ['#0284c7', '#10b981'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

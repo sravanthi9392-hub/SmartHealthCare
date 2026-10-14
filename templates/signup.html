@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Patient Account | Smart Healthcare Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%); min-height: 100vh;">
+
+<div class="auth-wrapper" style="padding: 2.5rem 1rem;">
+    <div class="auth-box" style="max-width: 520px;">
+        <div style="background: linear-gradient(135deg, #10b981, #059669); width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);">
+            <i class="fa-solid fa-user-plus"></i>
+        </div>
+
+        <h2>New Patient Registration</h2>
+        <p class="subtitle">Set up your smart profile for AI diagnosis and health records</p>
+
+        {% if error %}
+        <div style="background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; text-align: left; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('signup') }}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-regular fa-user"></i> Full Legal Name *</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="e.g. Sravanthi Reddy" required>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-regular fa-envelope"></i> Email Address *</label>
+                    <input type="email" name="email" class="form-control" placeholder="sravanthi@example.com" required>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label><i class="fa-solid fa-lock"></i> Password *</label>
+                    <input type="password" name="password" class="form-control" placeholder="Minimum 6 characters" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-calendar-day"></i> Age *</label>
+                    <input type="number" name="age" min="1" max="120" value="26" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-venus-mars"></i> Gender</label>
+                    <select name="gender" class="form-control">
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-droplet" style="color:#ef4444;"></i> Blood Group</label>
+                    <select name="blood_group" class="form-control">
+                        <option value="O+">O Positive (O+)</option>
+                        <option value="A+">A Positive (A+)</option>
+                        <option value="B+">B Positive (B+)</option>
+                        <option value="AB+">AB Positive (AB+)</option>
+                        <option value="O-">O Negative (O-)</option>
+                        <option value="A-">A Negative (A-)</option>
+                        <option value="B-">B Negative (B-)</option>
+                        <option value="AB-">AB Negative (AB-)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+                    <input type="tel" name="phone" placeholder="+91 9876543210" class="form-control">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 1rem;">
+                <i class="fa-solid fa-circle-check"></i> Register & Access Dashboard
+            </button>
+        </form>
+
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; font-size: 0.9rem; color: #64748b;">
+            Already registered? <a href="{{ url_for('login') }}" style="font-weight: 700; color: #0284c7;">Sign In</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
