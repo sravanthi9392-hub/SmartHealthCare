@@ -1,0 +1,21 @@
+# Virtual Environment (Must NOT be uploaded to GitHub)
+venv/
+env/
+.env
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Database journals & locks
+*.db-journal
+
+# VS Code & IDE settings
+.vscode/
+.idea/
+
+# OS specific files
+.DS_Store
+Thumbs.db
