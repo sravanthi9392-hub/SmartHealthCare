@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}All Platform Appointments | Admin Console{% endblock %}
+{% block header_title %}Clinical Appointments Management{% endblock %}
+{% block header_subtitle %}Track, verify, and update patient appointments across Video & Hospital OPD{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fa-solid fa-calendar-check" style="color: #0284c7;"></i> All Scheduled Consultations ({{ appointments|length }})
+        </h3>
+        <span class="badge badge-primary">Central Telehealth & Hospital OPD</span>
+    </div>
+
+    {% if appointments %}
+    <div class="table-responsive">
+        <table class="rx-med-table">
+            <thead>
+                <tr>
+                    <th>Appt ID</th>
+                    <th>Patient Details</th>
+                    <th>Doctor & Specialization</th>
+                    <th>Hospital / Center</th>
+                    <th>Type</th>
+                    <th>Date & Time</th>
+                    <th>Current Status</th>
+                    <th>Admin Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in appointments %}
+                <tr>
+                    <td><code>#APT-{{ a.id * 100 + 17 }}</code></td>
+                    <td>
+                        <div style="font-weight: 700; color: #0f172a;">{{ a.user.full_name }}</div>
+                        <small style="color: #64748b;">{{ a.user.email }}</small>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: #0369a1;">{{ a.doctor_name }}</div>
+                        <small style="color: #64748b;">{{ a.specialization }}</small>
+                    </td>
+                    <td>{{ a.hospital or 'Online Care' }}</td>
+                    <td>
+                        <span class="badge {% if a.appointment_type == 'Video' %}badge-primary{% else %}badge-success{% endif %}">
+                            <i class="fa-solid {% if a.appointment_type == 'Video' %}fa-video{% else %}fa-hospital{% endif %}"></i> {{ a.appointment_type }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">{{ a.appointment_date }}</div>
+                        <small style="color: #64748b;">{{ a.time_slot }}</small>
+                    </td>
+                    <td>
+                        <span class="badge {% if a.status == 'Confirmed' %}badge-success{% elif a.status == 'Completed' %}badge-primary{% else %}badge-danger{% endif %}">
+                            {{ a.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('admin_update_appointment', appt_id=a.id) }}" style="display: flex; gap: 4px; align-items: center;">
+                            <select name="status" style="padding: 0.35rem 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.8rem;">
+                                <option value="Confirmed" {% if a.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="Completed" {% if a.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                <option value="Cancelled" {% if a.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.65rem; font-size: 0.8rem;" title="Update Status">
+                                <i class="fa-solid fa-check"></i> Save
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem; color: #64748b;">
+        <i class="fa-regular fa-calendar-xmark" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+        <p style="font-weight: 600;">No appointments recorded in the system yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
