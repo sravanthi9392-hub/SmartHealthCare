@@ -2,7 +2,7 @@
 
 {% block title %}Smart AI Diagnosis & Clinical Prescription | Smart Healthcare{% endblock %}
 {% block header_title %}Smart AI Clinical Diagnosis & Rx{% endblock %}
-{% block header_subtitle %}50+ Symptom ML Model • Approved Pharmacology & Health Cafe Nutrition{% endblock %}
+{% block header_subtitle %}Comprehensive Clinical Assessment • Approved Pharmacology & Health Cafe Nutrition{% endblock %}
 
 {% block content %}
 
@@ -64,7 +64,7 @@
     <div class="rx-diagnosis-banner">
         <div>
             <div style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: #0369a1;">
-                Primary Clinical Diagnosis (Machine Learning Prediction)
+                Primary Clinical Assessment (AI Diagnostic Evaluation)
             </div>
             <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a;">
                 {{ result.disease }}
@@ -75,7 +75,7 @@
         </div>
         <div style="text-align: right;">
             <span class="badge badge-success" style="font-size: 1rem; padding: 0.4rem 1rem;">
-                <i class="fa-solid fa-microchip"></i> {{ result.confidence }}% AI Match
+                <i class="fa-solid fa-circle-check"></i> {{ result.confidence }}% Match
             </span>
         </div>
     </div>
@@ -212,7 +212,7 @@
                 Describe your symptoms naturally. As you type, our NLP engine will <b>automatically detect and toggle matching clinical indicators</b> below!
             </p>
         </div>
-        <span class="badge badge-success">ML Accuracy: 99.3%</span>
+        <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Clinical Diagnostic System</span>
     </div>
 
     <form method="POST" action="{{ url_for('prescription') }}" id="prescriptionForm">
@@ -410,7 +410,7 @@
 
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35);">
-            <i class="fa-solid fa-microchip"></i> Run Random Forest AI Diagnosis & Generate Rx Slip
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Health Assessment & Prescription Slip
         </button>
     </form>
 </div>
