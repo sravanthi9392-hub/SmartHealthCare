@@ -2,7 +2,7 @@
 
 {% block title %}All AI Prescriptions Audit Log | Admin Console{% endblock %}
 {% block header_title %}System-Wide AI Prescriptions Audit Log{% endblock %}
-{% block header_subtitle %}Complete audit repository of all ML diagnoses, clinical pharmacology, and diet plans generated{% endblock %}
+{% block header_subtitle %}Complete audit repository of all clinical assessments, pharmacology, and diet plans generated{% endblock %}
 
 {% block content %}
 
@@ -11,7 +11,7 @@
         <h3 class="card-title">
             <i class="fa-solid fa-file-waveform" style="color: #10b981;"></i> Generated Prescriptions Log ({{ prescriptions|length }})
         </h3>
-        <span class="badge badge-success">ML Model: Random Forest</span>
+        <span class="badge badge-success"><i class="fa-solid fa-clipboard-check"></i> System Active</span>
     </div>
 
     {% if prescriptions %}
