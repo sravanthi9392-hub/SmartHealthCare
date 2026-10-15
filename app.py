@@ -1652,42 +1652,6 @@ def doctor_prescriptions():
     return redirect(url_for('doctor_dashboard'))
 
 
-@app.route('/download_project_pdf')
-def download_project_pdf():
-    import io
-    from fpdf import FPDF
-    from fpdf.enums import XPos, YPos
-
-    # If artifact PDF exists on disk, send it
-    pdf_path = r"C:\Users\polam\.gemini\antigravity\brain\d7de3606-2e20-4d7e-9252-cd4780028c67\SmartHealthcare_Project_Report.pdf"
-    if os.path.exists(pdf_path):
-        return send_file(pdf_path, as_attachment=True, download_name="SmartHealthcare_Project_Report.pdf", mimetype='application/pdf')
-
-    # Cloud fallback: in-memory generated PDF without disk write
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.add_page()
-    pdf.set_fill_color(14, 116, 144)
-    pdf.rect(0, 0, 210, 24, 'F')
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font('Helvetica', 'B', 12)
-    pdf.cell(0, 10, 'SMART HEALTHCARE PLATFORM | TECHNICAL REPORT', new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C')
-    pdf.ln(6)
-    pdf.set_text_color(15, 23, 42)
-    pdf.set_font('Helvetica', 'B', 16)
-    pdf.cell(0, 8, 'Smart Healthcare Platform (SHP)', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.set_font('Helvetica', 'B', 10)
-    pdf.set_text_color(2, 132, 199)
-    pdf.cell(0, 6, 'AI-Driven Clinical Decision Support System (CDSS) & Telehealth Operations', new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-    pdf.ln(3)
-    pdf.set_font('Helvetica', '', 9)
-    pdf.set_text_color(51, 65, 85)
-    pdf.multi_cell(0, 5, 'Category: Healthcare Informatics / AI HealthTech\nArchitecture: 5-Tier Decoupled (Presentation, WSGI Application, ML Inference, Persistence, Security)\nBackend: Python 3.12, Flask 3.1, Scikit-Learn 1.9, SQLite3, SQLAlchemy ORM\nML Model: Multi-Class Random Forest Classifier (100 Decision Trees, max_depth=15, 50 Clinical Features, 16 Pathologies)\nSpecialist Network: 27+ Board-Certified Doctors across 15 Clinical Departments (Telehealth & OPD)\nSecurity: Werkzeug salted SHA-256 password hashing, RBAC decorators (@doctor_required, @admin_required).')
-    buf = io.BytesIO(pdf.output())
-    buf.seek(0)
-    return send_file(buf, as_attachment=True, download_name="SmartHealthcare_Project_Report.pdf", mimetype='application/pdf')
-
-
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print(f" * Smart Healthcare Platform running on http://127.0.0.1:{port}")
